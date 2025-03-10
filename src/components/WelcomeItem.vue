@@ -1,11 +1,11 @@
 <template>
   <div class="item">
-    <i>
-      <slot name="icon"></slot>
-    </i>
     <div class="details">
       <slot></slot>
     </div>
+    <i>
+      <slot name="icon"></slot>
+    </i>
   </div>
 </template>
 

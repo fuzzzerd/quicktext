@@ -1,14 +1,24 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import TheWelcome from './components/TheWelcome.vue';
 </script>
 
 <template>
   <header>
-    <img alt="quick text logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+    <img
+      alt="quick text logo"
+      class="logo"
+      src="./assets/logo.svg"
+      width="125"
+      height="125"
+    />
 
     <div class="wrapper">
-      <HelloWorld />
+      <div class="greetings">
+        <h1 class="green">Quick Text</h1>
+        <h3>
+          Save your common text strings or messages to your local storage.
+        </h3>
+      </div>
     </div>
   </header>
 
