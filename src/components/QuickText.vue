@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useStringStore } from '@/stores/stringStore';
-import QuickTextItem from './QuickTextItem.vue';
 
 const stringStore = useStringStore();
-const stringModel = ref('');
 
 async function shareItem(data: string) {
   const shareData = {
@@ -28,29 +25,43 @@ async function copyItem(data: string) {
   }
 }
 
-function addMsg() {
-  stringStore.addQuickText(stringModel.value);
-  stringModel.value = '';
-}
-
 function removeItem(data: string) {
   stringStore.removeQuickText(data);
 }
 </script>
 
 <template>
-  <div class="row">
-    <div class="col col-large">
-      <textarea type="text" name="msgAdd" v-model="stringModel"></textarea>
-      <input type="button" value="Add" @click="addMsg" />
+  <div class="row fill-width" v-for="qt in stringStore.quickTexts" :key="qt.id">
+    <div class="col details">
+      {{ qt.text }}
     </div>
-  </div>
-  <QuickTextItem v-for="qt in stringStore.quickTexts" :key="qt.id">
-    <template #icon>
+    <div class="col icons">
       <button @click="copyItem(qt.text)">📃</button>
       <button @click="shareItem(qt.text)">💬</button>
       <button @click="removeItem(qt.text)">❌</button>
-    </template>
-    {{ qt.text }}
-  </QuickTextItem>
+    </div>
+  </div>
 </template>
+
+<style scoped>
+.fill-width {
+  justify-content: space-between;
+}
+
+.details {
+  flex: 1;
+  flex-basis: 380px;
+}
+
+.icons {
+  display: flex;
+  flex-grow: 0;
+
+  button {
+    width: 50px;
+    height: 50px;
+    margin: 0;
+    padding: 0;
+  }
+}
+</style>
