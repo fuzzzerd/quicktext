@@ -20,6 +20,14 @@ async function shareItem(data: string) {
   }
 }
 
+async function copyItem(data: string) {
+  if (navigator.clipboard) {
+    await navigator.clipboard.writeText(data);
+  } else {
+    console.log('Clipboard API not supported.');
+  }
+}
+
 function addMsg() {
   stringStore.addQuickText(stringModel.value);
   stringModel.value = '';
@@ -31,14 +39,17 @@ function removeItem(data: string) {
 </script>
 
 <template>
-  <div>
-    <textarea type="text" name="msgAdd" v-model="stringModel"></textarea>
-    <input type="button" value="Add" @click="addMsg" />
+  <div class="row">
+    <div class="col col-large">
+      <textarea type="text" name="msgAdd" v-model="stringModel"></textarea>
+      <input type="button" value="Add" @click="addMsg" />
+    </div>
   </div>
   <QuickTextItem v-for="qt in stringStore.quickTexts" :key="qt.id">
     <template #icon>
+      <button @click="copyItem(qt.text)">📃</button>
       <button @click="shareItem(qt.text)">💬</button>
-      <button @click="removeItem(qt.text)">X</button>
+      <button @click="removeItem(qt.text)">❌</button>
     </template>
     {{ qt.text }}
   </QuickTextItem>

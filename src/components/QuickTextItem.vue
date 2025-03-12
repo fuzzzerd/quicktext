@@ -1,11 +1,11 @@
 <template>
-  <div class="item">
-    <div class="details">
+  <div class="row">
+    <div class="col col-medium">
       <slot></slot>
     </div>
-    <i>
+    <div class="col col-small icons">
       <slot name="icon"></slot>
-    </i>
+    </div>
   </div>
 </template>
 
@@ -21,4 +21,8 @@
   margin-left: 1rem;
 }
 
+.icons {
+  display: flex;
+  width: 100px;
+}
 </style>
