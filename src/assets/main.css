@@ -6,10 +6,6 @@ body, p {
   margin: 0;
 }
 
-#app {
-  height:100vh;
-}
-
 :root {
   --sans-font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   --border: #cecfd4;
