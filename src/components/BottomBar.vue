@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import { useStringStore } from '@/stores/stringStore';
+
+const input = useTemplateRef('textEntry');
 
 const isAddPanelVisible = ref(false);
 const isAboutPanelVisible = ref(false);
@@ -10,6 +12,9 @@ const stringStore = useStringStore();
 
 const toggleAddPanel = () => {
   isAddPanelVisible.value = !isAddPanelVisible.value;
+  if (isAddPanelVisible.value) {
+    input.value.focus();
+  }
 };
 const toggleAboutPanel = () => {
   isAboutPanelVisible.value = !isAboutPanelVisible.value;
@@ -34,6 +39,7 @@ function addMsg() {
       <div class="col col-large">
         <label for="textEntry">Enter text</label>
         <textarea
+          ref="textEntry"
           id="textEntry"
           type="text"
           name="msgAdd"
