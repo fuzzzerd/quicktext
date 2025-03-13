@@ -24,7 +24,8 @@ export default defineConfig({
         short_name: 'QuickText',
         description:
           'QuickText is a simple text editor that allows you to quickly write and save text.',
-        theme_color: '#ffffff',
+        theme_color: '#cccccc',
+        display: 'standalone',
         icons: [
           {
             src: 'icons/android-chrome-512x512.png',
