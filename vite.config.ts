@@ -12,7 +12,7 @@ export default defineConfig({
     VueDevTools(),
     basicSsl()
   ],
-  base: 'fuzzzerd.github.io/quicktext/',
+  base: 'https://fuzzzerd.github.io/quicktext/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
