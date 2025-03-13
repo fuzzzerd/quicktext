@@ -8,7 +8,6 @@ const stringModel = ref('');
 
 const stringStore = useStringStore();
 
-
 const toggleAddPanel = () => {
   isAddPanelVisible.value = !isAddPanelVisible.value;
 };
@@ -21,7 +20,6 @@ function addMsg() {
   stringModel.value = '';
   isAddPanelVisible.value = false;
 }
-
 </script>
 
 <template>
@@ -34,7 +32,13 @@ function addMsg() {
   <div class="sliding-panel container" :class="{ visible: isAddPanelVisible }">
     <div class="row">
       <div class="col col-large">
-        <textarea type="text" name="msgAdd" v-model="stringModel"></textarea>
+        <label for="textEntry">Enter text</label>
+        <textarea
+          id="textEntry"
+          type="text"
+          name="msgAdd"
+          v-model="stringModel"
+        ></textarea>
       </div>
     </div>
     <div class="row">
@@ -42,11 +46,18 @@ function addMsg() {
         <input type="button" value="Add" @click="addMsg" />
       </div>
       <div class="col">
-        <input type="button" value="Cancel" @click="isAddPanelVisible = false" />
+        <input
+          type="button"
+          value="Cancel"
+          @click="isAddPanelVisible = false"
+        />
       </div>
     </div>
   </div>
-  <div class="sliding-panel container" :class="{ visible: isAboutPanelVisible }">
+  <div
+    class="sliding-panel container"
+    :class="{ visible: isAboutPanelVisible }"
+  >
     <div class="row">
       <div class="col col-large">
         <p>Save your common text strings or messages to your local storage.</p>
@@ -61,7 +72,7 @@ function addMsg() {
   justify-content: space-between;
   position: fixed;
   bottom: 0;
-  left:0;
+  left: 0;
   width: 100%;
   z-index: 102;
 
@@ -75,8 +86,8 @@ function addMsg() {
   bottom: 52px;
   left: 0;
   width: 100%;
-  background-color: white;
-  border-top: 1px solid #ccc;
+  background-color: var(--accent-background);
+  border-top: 1px solid var(--border);
   transform: translateY(100%);
   transition: transform 0.3s ease-in-out;
   z-index: 101;
