@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from 'vue';
 import { useStringStore } from '@/stores/stringStore';
+import InstallPrompt from './InstallPrompt.vue';
 
 const input = useTemplateRef('textEntry');
 
@@ -31,7 +32,7 @@ function addMsg() {
 <template>
   <div class="bottom-bar">
     <button @click="toggleAddPanel">Add</button>
-    <button>Sort</button>
+    <InstallPrompt />
     <button @click="toggleAboutPanel">About</button>
   </div>
 

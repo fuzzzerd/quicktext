@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import QuickText from './components/QuickText.vue';
 import BottomBar from './components/BottomBar.vue';
+import ReloadPrompt from './components/ReloadPrompt.vue';
 </script>
 
 <template>
@@ -17,6 +18,7 @@ import BottomBar from './components/BottomBar.vue';
   </main>
 
   <BottomBar />
+  <ReloadPrompt />
 </template>
 
 <style scoped>
