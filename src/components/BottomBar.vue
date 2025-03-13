@@ -12,10 +12,11 @@ const stringStore = useStringStore();
 
 const toggleAddPanel = () => {
   isAddPanelVisible.value = !isAddPanelVisible.value;
-  if (isAddPanelVisible.value) {
+  if (isAddPanelVisible.value && input.value) {
     input.value.focus();
   }
 };
+
 const toggleAboutPanel = () => {
   isAboutPanelVisible.value = !isAboutPanelVisible.value;
 };
