@@ -24,7 +24,7 @@ export default defineConfig({
         short_name: 'QuickText',
         description:
           'QuickText is a simple text editor that allows you to quickly write and save text.',
-        theme_color: '#cccccc',
+        theme_color: '#34333a',
         display: 'standalone',
         icons: [
           {
