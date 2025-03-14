@@ -29,7 +29,7 @@
     "eslint-plugin-vue": "^9.33.0",
     "npm-run-all2": "^7.0.2",
     "prettier": "^3.5.3",
-    "typescript": "~5.4.0",
+    "typescript": "~5.8.2",
     "vite": "^6.2.1",
     "vite-plugin-mkcert": "^1.17.7",
     "vite-plugin-pwa": "^0.21.1",
