@@ -23,8 +23,8 @@ body, p {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: rgb(52, 51, 58);
-    --accent-background: rgb(81, 79, 90);
+    --background: #34333a;
+    --accent-background: #514f5a;
     --text: #d8d8d8;
     --text-light: #ffffff;
   }
