@@ -38,7 +38,6 @@ export default defineConfig({
     }),
     basicSsl()
   ],
-  base: 'https://fuzzzerd.github.io/quicktext/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
