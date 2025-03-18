@@ -7,8 +7,11 @@ import ReloadPrompt from './components/ReloadPrompt.vue';
 <template>
   <header class="container">
     <div class="row">
-      <div class="col col-small">
+      <div class="col">
         <h1>Quick Text</h1>
+      </div>
+      <div class="col icons">
+        <button>...</button>
       </div>
     </div>
   </header>
@@ -21,10 +24,25 @@ import ReloadPrompt from './components/ReloadPrompt.vue';
   <ReloadPrompt />
 </template>
 
-<style scoped>
-h1 { margin: 0; }
-h2 { margin: 0; }
-h3 { margin: 0; }
+<style>
+header {
+  background-color: var(--accent-background);
+  color: var(--accent-dark);
+}
+header h1 {
+  margin: 0;
+  padding: 0;
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+}
+
+h2 {
+  margin: 0;
+}
+
+h3 {
+  margin: 0;
+}
 
 main {
   padding-bottom: 52px;

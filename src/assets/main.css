@@ -9,9 +9,9 @@ body, p {
 :root {
   --sans-font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   --border: #cecfd4;
-  --accent: #fa986b;
-  --accent-dark: #b44512;
-  --accent-light: #f7bca3;
+  --accent: #e05d20;
+  --accent-dark: lch(from var(--accent) calc(l - 20) c h);
+  --accent-light: lch(from var(--accent) calc(l + 20) c h);
 }
 
 :root {
@@ -23,16 +23,17 @@ body, p {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #34333a;
+    --background: #1a191b;
     --accent-background: #514f5a;
-    --text: #d8d8d8;
+    --text: #ccbaba;
     --text-light: #ffffff;
   }
 }
+
 html {
   font-family: var(--sans-font);
   scroll-behavior: smooth;
-  font-size: 16pt;
+  font-size: 16px;
   color: var(--text);
   background: var(--background);
 }
@@ -137,7 +138,7 @@ textarea:focus {
   outline-color: var(--accent);
   border: 1px solid var(--accent);
   outline: none;
-  box-shadow: 0 0 10px var(--accent);
+  box-shadow: .25rem .25rem .5rem var(--accent-dark);
 }
 
 input[type=checkbox],
@@ -199,5 +200,22 @@ input[type=radio] {
 @media (max-width: 768px) {
   .col-small, .col-medium {
     flex-basis: 100%;
+  }
+}
+
+.details {
+  flex: 1;
+  flex-basis: 380px;
+}
+
+.icons {
+  display: flex;
+  flex-grow: 0;
+
+  button {
+    width: 2rem;
+    height: 2rem;
+    margin: 0;
+    padding: 0;
   }
 }

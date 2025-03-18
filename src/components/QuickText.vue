@@ -31,7 +31,7 @@ function removeItem(data: string) {
 </script>
 
 <template>
-  <div class="row fill-width" v-for="qt in stringStore.quickTexts" :key="qt.id">
+  <div class="row fill-width item" v-for="qt in stringStore.quickTexts" :key="qt.id">
     <div class="col details">
       {{ qt.text }}
     </div>
@@ -46,22 +46,13 @@ function removeItem(data: string) {
 <style scoped>
 .fill-width {
   justify-content: space-between;
+  align-items: center;
 }
 
-.details {
-  flex: 1;
-  flex-basis: 380px;
-}
-
-.icons {
-  display: flex;
-  flex-grow: 0;
-
-  button {
-    width: 50px;
-    height: 50px;
-    margin: 0;
-    padding: 0;
-  }
+.item {
+  /* &:first-child{
+    border-top: 1px dashed var(--accent);
+  } */
+  border-bottom: 1px dashed var(--accent);
 }
 </style>

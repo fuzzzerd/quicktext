@@ -91,7 +91,7 @@ function addMsg() {
 
 .sliding-panel {
   position: fixed;
-  bottom: 52px;
+  bottom: 40px;
   left: 0;
   width: 100%;
   background-color: var(--accent-background);
