@@ -27,13 +27,12 @@ import ReloadPrompt from './components/ReloadPrompt.vue';
 <style>
 header {
   background-color: var(--accent-background);
-  color: var(--accent-dark);
+  color: var(--accent);
 }
 header h1 {
   margin: 0;
   padding: 0;
   font-size: 1.5rem;
-  line-height: 1.5rem;
 }
 
 h2 {

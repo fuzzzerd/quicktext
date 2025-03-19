@@ -9,9 +9,9 @@ body, p {
 :root {
   --sans-font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   --border: #cecfd4;
-  --accent: #e05d20;
-  --accent-dark: lch(from var(--accent) calc(l - 20) c h);
-  --accent-light: lch(from var(--accent) calc(l + 20) c h);
+  --accent: #dd6832;
+  --accent-dark: lch(from var(--accent) calc(l - 15) c h);
+  --accent-light: lch(from var(--accent) calc(l + 15) c h);
 }
 
 :root {
@@ -23,8 +23,8 @@ body, p {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #1a191b;
-    --accent-background: #514f5a;
+    --background: #161516;
+    --accent-background: #2d2a33;
     --text: #ccbaba;
     --text-light: #ffffff;
   }
