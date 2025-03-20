@@ -1,7 +1,5 @@
 import { fileURLToPath, URL } from 'node:url';
-
 import { defineConfig } from 'vite';
-
 import { VitePWA } from 'vite-plugin-pwa';
 
 import vue from '@vitejs/plugin-vue';
@@ -24,8 +22,8 @@ export default defineConfig({
         short_name: 'QuickText',
         description:
           'QuickText is a simple text editor that allows you to quickly write and save text.',
-        theme_color: '#514f5a',
-        background_color: '#34333a',
+        theme_color: '#2d2a33',
+        background_color: '#161516',
         display: 'standalone',
         icons: [
           {
