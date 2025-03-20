@@ -205,11 +205,11 @@ input[type=radio] {
 
 .details {
   flex: 1;
-  flex-basis: 380px;
 }
 
 .icons {
   display: flex;
+  flex-direction: column;
   flex-grow: 0;
 
   button {
