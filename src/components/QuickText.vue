@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { useStringStore } from '@/stores/stringStore';
+import { ref } from 'vue';
 
 const stringStore = useStringStore();
+const placeholders = ref({});
 
 async function shareItem(data: string) {
+  data = itemThroughTemplate(data, placeholders.value);
   const shareData = {
     title: 'Quick Text',
     url: undefined,
@@ -19,10 +22,36 @@ async function shareItem(data: string) {
 
 async function copyItem(data: string) {
   if (navigator.clipboard) {
-    await navigator.clipboard.writeText(data);
+    await navigator.clipboard.writeText('');
+  }
+  const templated = itemThroughTemplate(data, placeholders.value);
+  if (navigator.clipboard) {
+    await navigator.clipboard.writeText(templated);
   } else {
     console.log('Clipboard API not supported.');
   }
+}
+
+function itemThroughTemplate(
+  text: string,
+  context: Record<string, string>
+): string {
+  const localContext = { ...context };
+  const placeholdersFound = text.match(/{{\s*([^}]+)\s*}}/g) || [];
+  placeholdersFound.forEach((placeholder) => {
+    const key = placeholder.replace(/[{}]/g, '').trim();
+    if (!localContext[key]) {
+      const userValue = window.prompt(`Enter value for ${key}:`) || key;
+      localContext[key] = userValue;
+    }
+  });
+  for (const key in localContext) {
+    text = text.replace(
+      new RegExp(`{{\\s*${key}\\s*}}`, 'g'),
+      localContext[key]
+    );
+  }
+  return text;
 }
 
 function removeItem(data: string) {
@@ -31,7 +60,11 @@ function removeItem(data: string) {
 </script>
 
 <template>
-  <div class="row fill-width item" v-for="qt in stringStore.quickTexts" :key="qt.id">
+  <div
+    class="row fill-width item"
+    v-for="qt in stringStore.quickTexts"
+    :key="qt.id"
+  >
     <div class="col details">
       {{ qt.text }}
     </div>
