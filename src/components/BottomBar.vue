@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ref, useTemplateRef } from 'vue';
-import { useStringStore } from '@/stores/stringStore';
+import SlidingPanel from './SlidingPanel.vue';
 import InstallPrompt from './InstallPrompt.vue';
 
-const input = useTemplateRef('textEntry');
+import { ref, useTemplateRef } from 'vue';
+import { useStringStore } from '@/stores/stringStore';
+
+const newTextEntry = useTemplateRef('newTextEntry');
 
 const isAddPanelVisible = ref(false);
 const isAboutPanelVisible = ref(false);
@@ -13,8 +15,8 @@ const stringStore = useStringStore();
 
 const toggleAddPanel = () => {
   isAddPanelVisible.value = !isAddPanelVisible.value;
-  if (isAddPanelVisible.value && input.value) {
-    input.value.focus();
+  if (isAddPanelVisible.value && newTextEntry.value) {
+    newTextEntry.value.focus();
   }
 };
 
@@ -36,12 +38,12 @@ function addMsg() {
     <button @click="toggleAboutPanel">About</button>
   </div>
 
-  <div class="sliding-panel container" :class="{ visible: isAddPanelVisible }">
+  <SlidingPanel :is-visible="isAddPanelVisible">
     <div class="row">
       <div class="col col-large">
         <label for="textEntry">Enter text</label>
         <textarea
-          ref="textEntry"
+          ref="newTextEntry"
           id="textEntry"
           type="text"
           name="msgAdd"
@@ -61,17 +63,15 @@ function addMsg() {
         />
       </div>
     </div>
-  </div>
-  <div
-    class="sliding-panel container"
-    :class="{ visible: isAboutPanelVisible }"
-  >
+  </SlidingPanel>
+
+  <SlidingPanel :is-visible="isAboutPanelVisible">
     <div class="row">
       <div class="col col-large">
         <p>Save your common text strings or messages to your local storage.</p>
       </div>
     </div>
-  </div>
+  </SlidingPanel>
 </template>
 
 <style scoped>
@@ -87,21 +87,5 @@ function addMsg() {
   button {
     margin: 0;
   }
-}
-
-.sliding-panel {
-  position: fixed;
-  bottom: 40px;
-  left: 0;
-  width: 100%;
-  background-color: var(--accent-background);
-  border-top: 1px solid var(--border);
-  transform: translateY(100%);
-  transition: transform 0.3s ease-in-out;
-  z-index: 101;
-}
-
-.sliding-panel.visible {
-  transform: translateY(0);
 }
 </style>
