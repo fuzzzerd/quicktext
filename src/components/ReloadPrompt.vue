@@ -5,14 +5,18 @@ const UPDATE_CHECK_INTERVAL = 20000; // 20sec
 
 const { needRefresh, updateServiceWorker } = useRegisterSW({
   immediate: true,
-  onRegisteredSW(swScriptUrl: string, r: ServiceWorkerRegistration | undefined) {
+  onRegisteredSW(
+    swScriptUrl: string,
+    r: ServiceWorkerRegistration | undefined
+  ) {
     console.log(`Refresh Checker: service worker at: ${swScriptUrl}`);
 
-    r &&
+    if (r) {
       setInterval(async () => {
         console.log('Refresh Checker: checking for update');
         await r.update();
       }, UPDATE_CHECK_INTERVAL);
+    }
   }
 });
 
