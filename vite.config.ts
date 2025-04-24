@@ -9,6 +9,7 @@ import basicSsl from '@vitejs/plugin-basic-ssl';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    basicSsl(),
     vue(),
     VueDevTools(),
     VitePWA({
@@ -33,8 +34,7 @@ export default defineConfig({
           }
         ]
       }
-    }),
-    basicSsl()
+    })
   ],
   resolve: {
     alias: {
