@@ -59,7 +59,10 @@ function addMsg() {
         <input
           type="button"
           value="Cancel"
-          @click="isAddPanelVisible = false; stringModel = '';"
+          @click="
+            isAddPanelVisible = false;
+            stringModel = '';
+          "
         />
       </div>
     </div>

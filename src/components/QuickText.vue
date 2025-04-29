@@ -38,7 +38,7 @@ function itemThroughTemplate(
 ): string {
   const localContext = { ...context };
   const placeholdersFound = text.match(/{{\s*([^}]+)\s*}}/g) || [];
-  placeholdersFound.forEach((placeholder) => {
+  placeholdersFound.forEach(placeholder => {
     const key = placeholder.replace(/[{}]/g, '').trim();
     if (!localContext[key]) {
       const userValue = window.prompt(`Enter value for ${key}:`) || key;
