@@ -23,3 +23,6 @@ jobs:
 
       - name: Build project
         run: npm run build
+
+      - name: Run et2 tests
+        run: npm run test

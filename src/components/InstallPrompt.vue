@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue';
 
 // Variable to stash the `BeforeInstallPromptEvent`.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let installEvent: any = null;
 
 const appCanInstall = computed(() => {
@@ -15,7 +16,7 @@ const appInstalled = ref(
 const mediaQuery = window.matchMedia('(display-mode: standalone)');
 mediaQuery.addEventListener(
   'change',
-  (event) => (appInstalled.value = event.matches)
+  event => (appInstalled.value = event.matches)
 );
 
 // Function that will be run when the app is installed.
@@ -28,7 +29,7 @@ const onInstall = () => {
 onMounted(() => {
   // Only relevant for browsers that support installation.
   if (appCanInstall.value) {
-    window.addEventListener('beforeinstallprompt', (event) => {
+    window.addEventListener('beforeinstallprompt', event => {
       // Do not show the install prompt quite yet.
       event.preventDefault();
       // Stash the `BeforeInstallPromptEvent` for later.

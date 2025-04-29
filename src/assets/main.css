@@ -2,12 +2,13 @@
   box-sizing: border-box;
 }
 
-body, p {
+body,
+p {
   margin: 0;
 }
 
 :root {
-  --sans-font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  --sans-font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   --border: #cecfd4;
   --accent: #dd6832;
   --accent-dark: lch(from var(--accent) calc(l - 15) c h);
@@ -105,7 +106,7 @@ table th {
 table thead {
   border-bottom: solid 2px var(--border);
 }
-table tbody tr:nth-child(2n+1) {
+table tbody tr:nth-child(2n + 1) {
   background-color: var(--accent-background);
 }
 table tbody tr {
@@ -138,11 +139,11 @@ textarea:focus {
   outline-color: var(--accent);
   border: 1px solid var(--accent);
   outline: none;
-  box-shadow: .25rem .25rem .5rem var(--accent-dark);
+  box-shadow: 0.25rem 0.25rem 0.5rem var(--accent-dark);
 }
 
-input[type=checkbox],
-input[type=radio] {
+input[type='checkbox'],
+input[type='radio'] {
   width: auto;
 }
 
@@ -152,8 +153,8 @@ input[type=radio] {
   width: 100%;
   margin-right: auto;
   margin-left: auto;
-  padding-right: .5rem;
-  padding-left: .5rem;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
 }
 
 .row {
@@ -164,7 +165,7 @@ input[type=radio] {
 }
 
 .col {
-  padding: .5rem;
+  padding: 0.5rem;
   box-sizing: border-box;
   flex-grow: 1;
 }
@@ -198,7 +199,8 @@ input[type=radio] {
   }
 }
 @media (max-width: 768px) {
-  .col-small, .col-medium {
+  .col-small,
+  .col-medium {
     flex-basis: 100%;
   }
 }

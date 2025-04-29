@@ -38,5 +38,11 @@ export const useStringStore = defineStore('stringStore', () => {
     localStorage.setItem('quickTexts', JSON.stringify(quickTexts.value));
   }
 
-  return { quickTexts, addQuickText, removeQuickText, getQuickTextById, removeQuickTextById };
+  return {
+    quickTexts,
+    addQuickText,
+    removeQuickText,
+    getQuickTextById,
+    removeQuickTextById
+  };
 });

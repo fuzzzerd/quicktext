@@ -9,8 +9,10 @@
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "format": "prettier --write src/"
+    "lint": "eslint . --fix",
+    "format": "prettier --write src/",
+    "cy:run": "cypress run",
+    "test": "START_SERVER_AND_TEST_INSECURE=1 start-server-and-test dev https://localhost:5173/index.html cy:run"
   },
   "dependencies": {
     "pinia": "^3.0.2",
@@ -24,11 +26,13 @@
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/eslint-config-typescript": "^14.5.0",
     "@vue/tsconfig": "^0.7.0",
+    "cypress": "^14.3.2",
     "eslint": "^9.22.0",
     "eslint-plugin-vue": "~10.0.0",
     "jiti": "^2.4.2",
     "npm-run-all2": "^7.0.2",
     "prettier": "^3.5.3",
+    "start-server-and-test": "^2.0.11",
     "typescript": "~5.8.3",
     "vite": "^6.2.6",
     "vite-plugin-pwa": "^1.0.0",
