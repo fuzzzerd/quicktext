@@ -11,7 +11,7 @@ defineProps<{ isVisible: boolean }>();
 <style scoped>
 .sliding-panel {
   position: fixed;
-  bottom: 40px;
+  bottom: 39px;
   left: 0;
   width: 100%;
   background-color: var(--accent-background);

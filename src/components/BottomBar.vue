@@ -85,10 +85,15 @@ function addMsg() {
   bottom: 0;
   left: 0;
   width: 100%;
+  height: 40px; /* Explicit height */
   z-index: 102;
 
   button {
     margin: 0;
+    height: 100%; /* Fill the container height */
+    padding-top: 0;
+    padding-bottom: 0;
+    border-bottom: none;
   }
 }
 </style>
