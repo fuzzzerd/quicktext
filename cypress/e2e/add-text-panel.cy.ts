@@ -4,15 +4,15 @@ describe('QuickText Add Panel', () => {
     cy.visit('/');
   });
 
-  it('should open the add panel when Add button is clicked', () => {
-    cy.contains('button', 'Add').click();
+  it('should open the add panel when FAB is clicked', () => {
+    cy.get('.fab').click(); // Changed selector
     cy.get('.sliding-panel.visible textarea[name="msgAdd"]').should(
       'be.visible'
     );
   });
 
   it('should add text to global collection', () => {
-    cy.contains('button', 'Add').click();
+    cy.get('.fab').click(); // Changed selector
     cy.get('.sliding-panel.visible textarea[name="msgAdd"]').type(
       'My awesome text'
     );
@@ -21,7 +21,7 @@ describe('QuickText Add Panel', () => {
   });
 
   it('should clear text and close panel on cancel', () => {
-    cy.contains('button', 'Add').click();
+    cy.get('.fab').click(); // Changed selector
     cy.get('.sliding-panel.visible textarea[name="msgAdd"]').type(
       'Should be cleared'
     );
@@ -31,7 +31,7 @@ describe('QuickText Add Panel', () => {
 
   it('should delete text from global collection', () => {
     // add a new item
-    cy.contains('button', 'Add').click();
+    cy.get('.fab').click(); // Changed selector
     cy.get('.sliding-panel.visible textarea[name="msgAdd"]').type(
       'To be deleted'
     );

@@ -2,6 +2,8 @@
 import QuickText from './components/QuickText.vue';
 import BottomBar from './components/BottomBar.vue';
 import ReloadPrompt from './components/ReloadPrompt.vue';
+import AddTextFab from './components/AddTextFab.vue'; // Import the new component
+import SettingsPanel from './components/SettingsPanel.vue'; // Import the SettingsPanel component
 </script>
 
 <template>
@@ -10,15 +12,16 @@ import ReloadPrompt from './components/ReloadPrompt.vue';
       <div class="col">
         <h1>Quick Text</h1>
       </div>
-      <div class="col icons">
-        <button>...</button>
-      </div>
+      <SettingsPanel class="col" />
     </div>
   </header>
 
   <main class="container">
     <QuickText />
   </main>
+
+  <AddTextFab />
+  <!-- Use the new component -->
 
   <BottomBar />
   <ReloadPrompt />
@@ -44,6 +47,6 @@ h3 {
 }
 
 main {
-  padding-bottom: 52px;
+  padding-bottom: 100px; /* Keep padding for FAB and BottomBar */
 }
 </style>
