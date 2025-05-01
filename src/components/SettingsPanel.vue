@@ -6,9 +6,7 @@
       @close="isSettingsPanelOpen = false"
     >
       <ul>
-        <li>Lorem ipsum dolor sit amet.</li>
-        <li>Consectetur adipiscing elit.</li>
-        <li>Sed do eiusmod tempor incididunt.</li>
+        <InstallPrompt />
         <li @click="toggleAboutPanel" style="cursor: pointer">About</li>
       </ul>
     </SlidingPanel>
@@ -19,8 +17,39 @@
     >
       <div class="row">
         <div class="col col-large">
+          <h2>Privacy First</h2>
+
+          <p>Your privacy is our priority. QuickText:</p>
+
+          <ul>
+            <li>
+              Stores all data locally in your browser using browser storage APIs
+            </li>
+            <li>Never transmits your content to any server</li>
+            <li>Has zero tracking or analytics</li>
+            <li>Works offline as a Progressive Web App (PWA)</li>
+          </ul>
+
           <p>
-            Save your common text strings or messages to your local storage.
+            All text snippets, templates, and placeholder values remain
+            exclusively on your device, ensuring complete privacy and data
+            control.
+          </p>
+
+          <h2>Lightweight & Fast</h2>
+
+          <p>QuickText is designed with performance in mind:</p>
+
+          <ul>
+            <li>Minimal footprint (under 100KB uncompressed)</li>
+            <li>Works offline after first load</li>
+            <li>Optimized for mobile devices</li>
+          </ul>
+
+          <p>
+            The app starts up fast and responds quickly to user interaction,
+            making it perfect for quickly capturing and retrieving text snippets
+            when you need them.
           </p>
         </div>
       </div>
@@ -30,6 +59,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import InstallPrompt from './InstallPrompt.vue';
 import SlidingPanel from './SlidingPanel.vue';
 
 const isSettingsPanelOpen = ref(false);
@@ -58,6 +88,7 @@ button {
   font-size: 1.5rem;
   cursor: pointer;
 }
+
 ul {
   list-style: none;
   padding: 1rem;

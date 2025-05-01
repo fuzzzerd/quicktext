@@ -62,12 +62,13 @@ function addMsg() {
 <style scoped>
 .fab {
   position: fixed;
-  bottom: 3rem; /* Position above the BottomBar */
-  right: 3rem;
+  bottom: 0.5rem;
+  right: 0.5rem;
   width: 3rem;
   height: 3rem;
+  margin: 0;
   border-radius: 50%;
-  background-color: var(--accent-background);
+  background-color: var(--accent);
   color: var(--accent);
   font-size: 1.25rem;
   border: none;
@@ -75,31 +76,6 @@ function addMsg() {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 101; /* Below BottomBar's panel but above main content */
-}
-
-/* Styles for the panel content if needed, copied/adapted from App.vue or BottomBar.vue if necessary */
-/* Assuming SlidingPanel handles its own base styles */
-.row {
-  display: flex;
-  margin-bottom: 1rem;
-}
-.col {
-  flex: 1;
-  padding: 0 0.5rem;
-}
-.col-large {
-  flex: 2; /* Or adjust as needed */
-}
-label {
-  display: block;
-  margin-bottom: 0.25rem;
-}
-textarea {
-  width: 100%;
-  min-height: 60px; /* Adjust as needed */
-}
-input[type='button'] {
-  width: 100%;
+  z-index: 101;
 }
 </style>

@@ -1,11 +1,7 @@
-<script setup lang="ts">
-import InstallPrompt from './InstallPrompt.vue';
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <div class="bottom-bar">
-    <InstallPrompt />
-  </div>
+  <div class="bottom-bar"></div>
 </template>
 
 <style scoped>
