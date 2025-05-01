@@ -63,7 +63,5 @@ async function installClicked() {
 </script>
 
 <template>
-  <button v-if="appCanInstall && !appInstalled" @click="installClicked">
-    Install
-  </button>
+  <li v-if="appCanInstall && !appInstalled" @click="installClicked">Install</li>
 </template>
