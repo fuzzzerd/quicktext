@@ -43,17 +43,18 @@ function addMsg() {
     </div>
     <div class="row">
       <div class="col">
-        <input type="button" value="Add" @click="addMsg" />
-      </div>
-      <div class="col">
-        <input
-          type="button"
-          value="Cancel"
+        <button
+          class="secondary"
           @click="
             isAddPanelVisible = false;
             stringModel = '';
           "
-        />
+        >
+          Cancel
+        </button>
+      </div>
+      <div class="col">
+        <button class="primary" @click="addMsg">Add</button>
       </div>
     </div>
   </SlidingPanel>
@@ -77,5 +78,20 @@ function addMsg() {
   justify-content: center;
   align-items: center;
   z-index: 101;
+}
+
+.primary {
+  background-color: var(--accent);
+  color: var(--accent-background);
+}
+.secondary {
+  background-color: var(--accent-background);
+  color: var(--accent);
+  border: none;
+  box-shadow: none;
+}
+
+textarea {
+  height: 10rem;
 }
 </style>
