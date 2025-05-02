@@ -31,6 +31,8 @@ function handleOverlayClick() {
   position: fixed;
   bottom: 0;
   left: 0;
+  max-height: 80vh;
+  overflow-y: auto;
   width: 100%;
   background-color: var(--accent-background);
   border-top: 1px solid var(--border);
