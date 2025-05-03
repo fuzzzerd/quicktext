@@ -16,7 +16,7 @@ describe('QuickText Add Panel', () => {
     cy.get('.sliding-panel.visible textarea[name="msgAdd"]').type(
       'My awesome text'
     );
-    cy.get('.sliding-panel.visible input[value="Add"]').click();
+    cy.get('.sliding-panel.visible button').contains('Add').click(); // New selector targeting button by text
     cy.get('.item .details').should('contain.text', 'My awesome text');
   });
 
@@ -25,7 +25,7 @@ describe('QuickText Add Panel', () => {
     cy.get('.sliding-panel.visible textarea[name="msgAdd"]').type(
       'Should be cleared'
     );
-    cy.get('.sliding-panel.visible input[value="Cancel"]').click();
+    cy.get('.sliding-panel.visible button').contains('Cancel').click(); // New selector targeting button by text
     cy.get('.sliding-panel.visible').should('not.exist');
   });
 
@@ -35,7 +35,7 @@ describe('QuickText Add Panel', () => {
     cy.get('.sliding-panel.visible textarea[name="msgAdd"]').type(
       'To be deleted'
     );
-    cy.get('.sliding-panel.visible input[value="Add"]').click();
+    cy.get('.sliding-panel.visible button').contains('Add').click(); // New selector targeting button by text
     // delete the item
     cy.get('.item')
       .contains('.details', 'To be deleted')
