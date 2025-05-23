@@ -131,6 +131,9 @@ textarea {
   width: 100%;
   display: inline-block;
   border: 1px solid var(--border);
+  border-radius: 0.25rem;
+  box-sizing: border-box;
+  resize: vertical;
 }
 input:focus,
 select:focus,
@@ -139,7 +142,7 @@ textarea:focus {
   outline-color: var(--accent);
   border: 1px solid var(--accent);
   outline: none;
-  box-shadow: 0.25rem 0.25rem 0.5rem var(--accent-dark);
+  box-shadow: 0 0 0.5rem var(--accent-dark);
 }
 
 input[type='checkbox'],
