@@ -1,12 +1,28 @@
 <script setup lang="ts">
 import { useStringStore } from '@/stores/stringStore';
 import { ref } from 'vue';
+import TemplateVariablePanel from './TemplateVariablePanel.vue';
 
 const stringStore = useStringStore();
-const placeholders = ref({});
+const isTemplateVisible = ref(false);
+const currentTemplate = ref('');
+const currentAction = ref<'copy' | 'share'>('copy');
+const templateVariables = ref<string[]>([]);
+
+function extractTemplateVariables(text: string): string[] {
+  const placeholdersFound = text.match(/{{\s*([^}]+)\s*}}/g) || [];
+  return placeholdersFound.map(placeholder =>
+    placeholder.replace(/[{}]/g, '').trim()
+  );
+}
 
 async function shareItem(data: string) {
-  data = itemThroughTemplate(data, placeholders.value);
+  const variables = extractTemplateVariables(data);
+  if (variables.length > 0) {
+    showTemplatePanel(data, 'share');
+    return;
+  }
+
   const shareData = {
     title: 'Quick Text',
     url: undefined,
@@ -21,35 +37,68 @@ async function shareItem(data: string) {
 }
 
 async function copyItem(data: string) {
+  const variables = extractTemplateVariables(data);
+  if (variables.length > 0) {
+    showTemplatePanel(data, 'copy');
+    return;
+  }
+
   if (navigator.clipboard) {
     await navigator.clipboard.writeText('');
-  }
-  const templated = itemThroughTemplate(data, placeholders.value);
-  if (navigator.clipboard) {
-    await navigator.clipboard.writeText(templated);
+    await navigator.clipboard.writeText(data);
   } else {
     console.log('Clipboard API not supported.');
   }
+}
+
+function showTemplatePanel(text: string, action: 'copy' | 'share') {
+  currentTemplate.value = text;
+  currentAction.value = action;
+  templateVariables.value = extractTemplateVariables(text);
+  isTemplateVisible.value = true;
+}
+
+async function handleTemplateExecute(variableValues: Record<string, string>) {
+  const processedText = itemThroughTemplate(
+    currentTemplate.value,
+    variableValues
+  );
+
+  if (currentAction.value === 'copy') {
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText('');
+      await navigator.clipboard.writeText(processedText);
+    } else {
+      console.log('Clipboard API not supported.');
+    }
+  } else {
+    const shareData = {
+      title: 'Quick Text',
+      url: undefined,
+      text: processedText
+    };
+
+    if (navigator.canShare && navigator.canShare(shareData)) {
+      await navigator.share(shareData);
+    } else {
+      console.log('Web Share API not supported.');
+    }
+  }
+
+  // Reset template state
+  isTemplateVisible.value = false;
+}
+
+function handleTemplateClose() {
+  isTemplateVisible.value = false;
 }
 
 function itemThroughTemplate(
   text: string,
   context: Record<string, string>
 ): string {
-  const localContext = { ...context };
-  const placeholdersFound = text.match(/{{\s*([^}]+)\s*}}/g) || [];
-  placeholdersFound.forEach(placeholder => {
-    const key = placeholder.replace(/[{}]/g, '').trim();
-    if (!localContext[key]) {
-      const userValue = window.prompt(`Enter value for ${key}:`) || key;
-      localContext[key] = userValue;
-    }
-  });
-  for (const key in localContext) {
-    text = text.replace(
-      new RegExp(`{{\\s*${key}\\s*}}`, 'g'),
-      localContext[key]
-    );
+  for (const key in context) {
+    text = text.replace(new RegExp(`{{\\s*${key}\\s*}}`, 'g'), context[key]);
   }
   return text;
 }
@@ -74,6 +123,15 @@ function removeItem(data: string) {
       <button @click="removeItem(qt.text)">❌</button>
     </div>
   </div>
+
+  <TemplateVariablePanel
+    :is-visible="isTemplateVisible"
+    :template-text="currentTemplate"
+    :action-type="currentAction"
+    :template-variables="templateVariables"
+    @close="handleTemplateClose"
+    @execute="handleTemplateExecute"
+  />
 </template>
 
 <style scoped>
@@ -83,9 +141,6 @@ function removeItem(data: string) {
 }
 
 .item {
-  /* &:first-child{
-    border-top: 1px dashed var(--accent);
-  } */
   border-bottom: 1px dashed var(--accent);
 }
 </style>
