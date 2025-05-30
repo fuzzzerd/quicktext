@@ -3,6 +3,15 @@ import QuickText from './components/QuickText.vue';
 import ReloadPrompt from './components/ReloadPrompt.vue';
 import AddTextFab from './components/AddTextFab.vue'; // Import the new component
 import SettingsPanel from './components/SettingsPanel.vue'; // Import the SettingsPanel component
+
+function handleAddText() {
+  // We need to expose the toggleAddPanel method from AddTextFab
+  // For now, let's trigger a click on the FAB button
+  const fabButton = document.querySelector('.fab') as HTMLButtonElement;
+  if (fabButton) {
+    fabButton.click();
+  }
+}
 </script>
 
 <template>
@@ -16,7 +25,7 @@ import SettingsPanel from './components/SettingsPanel.vue'; // Import the Settin
   </header>
 
   <main class="container">
-    <QuickText />
+    <QuickText @add-text="handleAddText" />
   </main>
 
   <AddTextFab />
