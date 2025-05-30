@@ -130,6 +130,30 @@ function handleAddText() {
       </div>
     </section>
 
+    <section class="github-full-width">
+      <div class="github-card">
+        <h3>🚀 Open Source</h3>
+        <p>
+          QuickText is open source and actively maintained on GitHub. Visit our
+          repository to:
+        </p>
+        <div class="github-benefits">
+          <div class="benefit">🌟 View the source code and contribute</div>
+          <div class="benefit">🐛 Report bugs or request features</div>
+          <div class="benefit">🗺️ See what's coming next</div>
+          <div class="benefit">⭐ Support the project with a star</div>
+        </div>
+        <a
+          href="https://github.com/fuzzzerd/quicktext"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="github-link"
+        >
+          🌐 Visit QuickText on GitHub
+        </a>
+      </div>
+    </section>
+
     <section class="examples">
       <h3>💡 Template Examples</h3>
       <div class="example-grid">
@@ -172,6 +196,7 @@ function handleAddText() {
         </div>
       </div>
     </section>
+
 
     <section class="call-to-action">
       <p class="cta-text">
@@ -459,6 +484,99 @@ code {
   font-family: monospace;
   font-size: 0.9rem;
   color: var(--accent);
+}
+
+.privacy-list,
+.performance-list,
+.github-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.privacy-list li,
+.performance-list li,
+.github-list li {
+  padding: 0.5rem 0;
+  border-bottom: 1px dashed var(--border);
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.privacy-list li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: bold;
+}
+
+.performance-list li::before {
+  content: '⚡';
+  position: absolute;
+  left: 0;
+}
+
+.github-list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: bold;
+}
+
+.github-full-width {
+  margin: 2rem 0;
+}
+
+.github-card {
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  background: var(--accent-background);
+  text-align: center;
+}
+
+.github-card h3 {
+  margin-bottom: 1rem;
+  color: var(--accent);
+}
+
+.github-benefits {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+@media (max-width: 768px) {
+  .github-benefits {
+    grid-template-columns: 1fr;
+  }
+}
+
+.github-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--accent);
+  color: white;
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  margin-top: 1rem;
+}
+
+.github-link:hover {
+  background: var(--accent-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.github-link:active {
+  transform: translateY(0);
 }
 
 .welcome-container .example-text span,

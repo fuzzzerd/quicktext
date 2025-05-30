@@ -7,53 +7,17 @@
     >
       <ul>
         <InstallPrompt />
-        <li @click="toggleAboutPanel" style="cursor: pointer">About</li>
+        <li @click="toggleHelpPanel" style="cursor: pointer">Help</li>
       </ul>
     </SlidingPanel>
 
     <SlidingPanel
-      :is-visible="isAboutPanelOpen"
-      @close="isAboutPanelOpen = false"
+      :is-visible="isHelpPanelOpen"
+      @close="isHelpPanelOpen = false"
     >
-      <div class="row">
-        <div class="col col-large">
-          <h2>Privacy First</h2>
-
-          <p>Your privacy is our priority. QuickText:</p>
-
-          <ul>
-            <li>
-              Stores all data locally in your browser using browser storage APIs
-            </li>
-            <li>Never transmits your content to any server</li>
-            <li>Has zero tracking or analytics</li>
-            <li>Works offline as a Progressive Web App (PWA)</li>
-          </ul>
-
-          <p>
-            All text snippets, templates, and placeholder values remain
-            exclusively on your device, ensuring complete privacy and data
-            control.
-          </p>
-
-          <h2>Lightweight & Fast</h2>
-
-          <p>QuickText is designed with performance in mind:</p>
-
-          <ul>
-            <li>Minimal footprint (under 100KB uncompressed)</li>
-            <li>Works offline after first load</li>
-            <li>Optimized for mobile devices</li>
-          </ul>
-
-          <p>
-            The app starts up fast and responds quickly to user interaction,
-            making it perfect for quickly capturing and retrieving text snippets
-            when you need them.
-          </p>
-        </div>
-      </div>
+      <WelcomeContent @add-text="handleAddText" />
     </SlidingPanel>
+
   </div>
 </template>
 
@@ -61,22 +25,32 @@
 import { ref } from 'vue';
 import InstallPrompt from './InstallPrompt.vue';
 import SlidingPanel from './SlidingPanel.vue';
+import WelcomeContent from './WelcomeContent.vue';
+
+const emit = defineEmits<{
+  addText: []
+}>();
 
 const isSettingsPanelOpen = ref(false);
-const isAboutPanelOpen = ref(false);
+const isHelpPanelOpen = ref(false);
 
 function toggleSettingsPanel() {
   isSettingsPanelOpen.value = !isSettingsPanelOpen.value;
   if (isSettingsPanelOpen.value) {
-    isAboutPanelOpen.value = false;
+    isHelpPanelOpen.value = false;
   }
 }
 
-function toggleAboutPanel() {
-  isAboutPanelOpen.value = !isAboutPanelOpen.value;
-  if (isAboutPanelOpen.value) {
+function toggleHelpPanel() {
+  isHelpPanelOpen.value = !isHelpPanelOpen.value;
+  if (isHelpPanelOpen.value) {
     isSettingsPanelOpen.value = false;
   }
+}
+
+function handleAddText() {
+  emit('addText');
+  isHelpPanelOpen.value = false;
 }
 </script>
 

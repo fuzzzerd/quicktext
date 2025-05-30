@@ -20,7 +20,7 @@ function handleAddText() {
       <div class="col">
         <h1>Quick Text</h1>
       </div>
-      <SettingsPanel class="col" />
+      <SettingsPanel class="col" @add-text="handleAddText" />
     </div>
   </header>
 
