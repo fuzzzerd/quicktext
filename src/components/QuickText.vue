@@ -2,6 +2,11 @@
 import { useStringStore } from '@/stores/stringStore';
 import { ref } from 'vue';
 import TemplateVariablePanel from './TemplateVariablePanel.vue';
+import WelcomeContent from './WelcomeContent.vue';
+
+const emit = defineEmits<{
+  addText: [];
+}>();
 
 const stringStore = useStringStore();
 const isTemplateVisible = ref(false);
@@ -106,10 +111,22 @@ function itemThroughTemplate(
 function removeItem(data: string) {
   stringStore.removeQuickText(data);
 }
+
+function handleAddText() {
+  emit('addText');
+}
 </script>
 
 <template>
+  <!-- Show welcome content when no snippets exist -->
+  <WelcomeContent
+    v-if="stringStore.quickTexts.length === 0"
+    @add-text="handleAddText"
+  />
+
+  <!-- Show snippets when they exist -->
   <div
+    v-else
     class="row fill-width item"
     v-for="qt in stringStore.quickTexts"
     :key="qt.id"
