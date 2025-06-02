@@ -10,7 +10,7 @@ module.exports = defineConfig({
     openMode: 0
   },
   e2e: {
-    baseUrl: 'https://localhost:5173'
+    baseUrl: 'https://localhost:5059'
   },
   chromeWebSecurity: false,
   video: false
