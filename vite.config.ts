@@ -8,6 +8,9 @@ import basicSsl from '@vitejs/plugin-basic-ssl';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  server: {
+    port: 5059
+  },
   plugins: [
     basicSsl(),
     vue(),
