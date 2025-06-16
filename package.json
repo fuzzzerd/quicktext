@@ -15,7 +15,7 @@
     "test": "START_SERVER_AND_TEST_INSECURE=1 start-server-and-test dev https://localhost:5059/index.html cy:run"
   },
   "dependencies": {
-    "pinia": "^3.0.2",
+    "pinia": "^3.0.3",
     "vue": "^3.5.16"
   },
   "devDependencies": {
