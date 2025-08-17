@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
 const { defineConfig } = require('cypress');
 
 // https://github.com/cypress-io/cypress/issues/28802
