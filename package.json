@@ -21,8 +21,8 @@
   "devDependencies": {
     "@tsconfig/node22": "^22.0.2",
     "@types/node": "^24.3.0",
-    "@vitejs/plugin-basic-ssl": "^2.0.0",
-    "@vitejs/plugin-vue": "^5.2.4",
+    "@vitejs/plugin-basic-ssl": "^2.1.0",
+    "@vitejs/plugin-vue": "^6.0.1",
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/eslint-config-typescript": "^14.6.0",
     "@vue/tsconfig": "^0.7.0",
@@ -34,9 +34,9 @@
     "prettier": "^3.5.3",
     "start-server-and-test": "^2.0.12",
     "typescript": "~5.8.3",
-    "vite": "^6.3.5",
-    "vite-plugin-pwa": "^1.0.0",
-    "vite-plugin-vue-devtools": "^7.7.6",
+    "vite": "^7.1.2",
+    "vite-plugin-pwa": "^1.0.2",
+    "vite-plugin-vue-devtools": "^8.0.0",
     "vue-tsc": "^2.2.8"
   }
 }
