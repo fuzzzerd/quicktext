@@ -103,7 +103,7 @@ function itemThroughTemplate(
   context: Record<string, string>
 ): string {
   for (const key in context) {
-    text = text.replace(new RegExp(`{{\\s*${key}\\s*}}`, 'g'), context[key]);
+    text = text.replace(new RegExp(`{{\\s*${key}\\s*}}`, 'g'), context[key] ?? '');
   }
   return text;
 }
