@@ -33,7 +33,7 @@
     "npm-run-all2": "^8.0.4",
     "prettier": "^3.6.2",
     "start-server-and-test": "^2.0.13",
-    "typescript": "~5.8.3",
+    "typescript": "~5.9.2",
     "vite": "^7.1.2",
     "vite-plugin-pwa": "^1.0.2",
     "vite-plugin-vue-devtools": "^8.0.0",
