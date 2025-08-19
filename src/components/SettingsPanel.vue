@@ -7,6 +7,7 @@
     >
       <ul>
         <InstallPrompt />
+        <li @click="toggleCategoryManager" style="cursor: pointer">Manage Categories</li>
         <li @click="toggleHelpPanel" style="cursor: pointer">Help</li>
       </ul>
     </SlidingPanel>
@@ -18,6 +19,13 @@
       <WelcomeContent @add-text="handleAddText" />
     </SlidingPanel>
 
+    <SlidingPanel
+      :is-visible="isCategoryManagerOpen"
+      @close="isCategoryManagerOpen = false"
+    >
+      <CategoryManager @close="isCategoryManagerOpen = false" />
+    </SlidingPanel>
+
   </div>
 </template>
 
@@ -26,6 +34,7 @@ import { ref } from 'vue';
 import InstallPrompt from './InstallPrompt.vue';
 import SlidingPanel from './SlidingPanel.vue';
 import WelcomeContent from './WelcomeContent.vue';
+import CategoryManager from './CategoryManager.vue';
 
 const emit = defineEmits<{
   addText: []
@@ -33,11 +42,13 @@ const emit = defineEmits<{
 
 const isSettingsPanelOpen = ref(false);
 const isHelpPanelOpen = ref(false);
+const isCategoryManagerOpen = ref(false);
 
 function toggleSettingsPanel() {
   isSettingsPanelOpen.value = !isSettingsPanelOpen.value;
   if (isSettingsPanelOpen.value) {
     isHelpPanelOpen.value = false;
+    isCategoryManagerOpen.value = false;
   }
 }
 
@@ -45,6 +56,15 @@ function toggleHelpPanel() {
   isHelpPanelOpen.value = !isHelpPanelOpen.value;
   if (isHelpPanelOpen.value) {
     isSettingsPanelOpen.value = false;
+    isCategoryManagerOpen.value = false;
+  }
+}
+
+function toggleCategoryManager() {
+  isCategoryManagerOpen.value = !isCategoryManagerOpen.value;
+  if (isCategoryManagerOpen.value) {
+    isSettingsPanelOpen.value = false;
+    isHelpPanelOpen.value = false;
   }
 }
 

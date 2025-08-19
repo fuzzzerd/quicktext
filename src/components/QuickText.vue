@@ -3,6 +3,9 @@ import { useStringStore } from '@/stores/stringStore';
 import { ref } from 'vue';
 import TemplateVariablePanel from './TemplateVariablePanel.vue';
 import WelcomeContent from './WelcomeContent.vue';
+import BottomBar from './BottomBar.vue';
+import EditTextPanel from './EditTextPanel.vue';
+import type QuickText from '../models/quickText';
 
 const emit = defineEmits<{
   addText: [];
@@ -13,6 +16,8 @@ const isTemplateVisible = ref(false);
 const currentTemplate = ref('');
 const currentAction = ref<'copy' | 'share'>('copy');
 const templateVariables = ref<string[]>([]);
+const isEditPanelVisible = ref(false);
+const editingQuickText = ref<QuickText | null>(null);
 
 function extractTemplateVariables(text: string): string[] {
   const placeholdersFound = text.match(/{{\s*([^}]+)\s*}}/g) || [];
@@ -115,29 +120,48 @@ function removeItem(data: string) {
 function handleAddText() {
   emit('addText');
 }
+
+function startEdit(qt: QuickText) {
+  editingQuickText.value = qt;
+  isEditPanelVisible.value = true;
+}
+
+function handleEditClose() {
+  isEditPanelVisible.value = false;
+  editingQuickText.value = null;
+}
 </script>
 
 <template>
   <!-- Show welcome content when no snippets exist -->
   <WelcomeContent
-    v-if="stringStore.quickTexts.length === 0"
+    v-if="stringStore.quickTexts.length === 0 && !stringStore.activeCategoryId"
     @add-text="handleAddText"
   />
+
+  <!-- Show message when category is selected but has no items -->
+  <div
+    v-else-if="stringStore.filteredQuickTexts.length === 0 && stringStore.activeCategoryId"
+    class="empty-category-message"
+  >
+    <p>No templates in this category</p>
+    <button @click="handleAddText" class="add-template-btn">Add Template</button>
+  </div>
 
   <!-- Show snippets when they exist -->
   <div
     v-else
     class="row fill-width item"
-    v-for="qt in stringStore.quickTexts"
+    v-for="qt in stringStore.filteredQuickTexts"
     :key="qt.id"
   >
-    <div class="col details">
+    <div class="col details" @click="startEdit(qt)">
       {{ qt.text }}
     </div>
     <div class="col icons">
-      <button @click="copyItem(qt.text)">📃</button>
-      <button @click="shareItem(qt.text)">💬</button>
-      <button @click="removeItem(qt.text)">❌</button>
+      <button @click.stop="copyItem(qt.text)">📃</button>
+      <button @click.stop="shareItem(qt.text)">💬</button>
+      <button @click.stop="removeItem(qt.text)">❌</button>
     </div>
   </div>
 
@@ -149,6 +173,16 @@ function handleAddText() {
     @close="handleTemplateClose"
     @execute="handleTemplateExecute"
   />
+  
+  <EditTextPanel
+    :is-visible="isEditPanelVisible"
+    :quick-text="editingQuickText"
+    @close="handleEditClose"
+    @saved="handleEditClose"
+    @deleted="handleEditClose"
+  />
+  
+  <BottomBar />
 </template>
 
 <style scoped>
@@ -159,5 +193,52 @@ function handleAddText() {
 
 .item {
   border-bottom: 1px dashed var(--accent);
+}
+
+.details {
+  cursor: pointer;
+  transition: background-color 0.2s;
+  padding: 0.5rem;
+  margin: -0.5rem;
+  border-radius: 4px;
+}
+
+.details:hover {
+  background-color: var(--accent-background);
+}
+
+.empty-category-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.empty-category-message p {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.add-template-btn {
+  padding: 0.5rem 1rem;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: opacity 0.2s;
+}
+
+.add-template-btn:hover {
+  opacity: 0.9;
+}
+
+/* Add padding to bottom when category tabs are visible */
+:global(.quicktext-container) {
+  padding-bottom: 60px;
 }
 </style>

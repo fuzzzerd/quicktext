@@ -55,6 +55,6 @@ h3 {
 }
 
 main {
-  padding-bottom: 4rem; /* Keep padding for FAB and BottomBar */
+  padding-bottom: 5rem; /* Padding for FAB and BottomBar */
 }
 </style>
