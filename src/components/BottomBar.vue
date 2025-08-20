@@ -5,10 +5,7 @@ const stringStore = useStringStore();
 </script>
 
 <template>
-  <div 
-    v-if="stringStore.shouldShowCategoryTabs" 
-    class="bottom-bar"
-  >
+  <div v-if="stringStore.shouldShowCategoryTabs" class="bottom-bar">
     <button
       v-if="stringStore.hasUncategorizedItems"
       :class="{ active: stringStore.activeCategoryId === -1 }"
@@ -17,19 +14,23 @@ const stringStore = useStringStore();
     >
       📁
     </button>
-    
+
     <button
       v-for="category in stringStore.sortedCategories"
       :key="category.id"
-      :class="{ active: stringStore.activeCategoryId === category.id, 'has-pin': category.pin }"
+      :class="{
+        active: stringStore.activeCategoryId === category.id,
+        'has-pin': category.pin
+      }"
       @click="stringStore.setActiveCategory(category.id)"
       :title="category.pin ? `${category.name} (PIN protected)` : category.name"
     >
       <span v-if="category.icon">{{ category.icon }}</span>
-      <span v-else class="category-initial">{{ category.name.charAt(0).toUpperCase() }}</span>
+      <span v-else class="category-initial">{{
+        category.name.charAt(0).toUpperCase()
+      }}</span>
       <span v-if="category.pin" class="pin-indicator">🔒</span>
     </button>
-    
   </div>
 </template>
 
@@ -117,7 +118,6 @@ const stringStore = useStringStore();
   align-items: center;
   justify-content: center;
 }
-
 
 @media (prefers-color-scheme: dark) {
   .bottom-bar button:hover {

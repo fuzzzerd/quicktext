@@ -7,7 +7,9 @@
     >
       <ul>
         <InstallPrompt />
-        <li @click="toggleCategoryManager" style="cursor: pointer">Manage Categories</li>
+        <li @click="toggleCategoryManager" style="cursor: pointer">
+          Manage Categories
+        </li>
         <li @click="toggleHelpPanel" style="cursor: pointer">Help</li>
       </ul>
     </SlidingPanel>
@@ -25,7 +27,6 @@
     >
       <CategoryManager @close="isCategoryManagerOpen = false" />
     </SlidingPanel>
-
   </div>
 </template>
 
@@ -37,7 +38,7 @@ import WelcomeContent from './WelcomeContent.vue';
 import CategoryManager from './CategoryManager.vue';
 
 const emit = defineEmits<{
-  addText: []
+  addText: [];
 }>();
 
 const isSettingsPanelOpen = ref(false);
