@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { useStringStore } from '@/stores/stringStore';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import TemplateVariablePanel from './TemplateVariablePanel.vue';
 import WelcomeContent from './WelcomeContent.vue';
 import BottomBar from './BottomBar.vue';
 import EditTextPanel from './EditTextPanel.vue';
+import PinEntryPanel from './PinEntryPanel.vue';
 import type QuickText from '../models/quickText';
 
 const emit = defineEmits<{
@@ -18,6 +19,20 @@ const currentAction = ref<'copy' | 'share'>('copy');
 const templateVariables = ref<string[]>([]);
 const isEditPanelVisible = ref(false);
 const editingQuickText = ref<QuickText | null>(null);
+const isPinEntryVisible = ref(false);
+
+// Watch for category changes to auto-show pin prompt
+watch(
+  () => stringStore.activeCategoryId,
+  (newCategoryId) => {
+    if (newCategoryId && newCategoryId !== -1) {
+      const category = stringStore.getCategoryById(newCategoryId);
+      if (category?.pin && !stringStore.isCategoryAuthorized(newCategoryId)) {
+        isPinEntryVisible.value = true;
+      }
+    }
+  }
+);
 
 function extractTemplateVariables(text: string): string[] {
   const placeholdersFound = text.match(/{{\s*([^}]+)\s*}}/g) || [];
@@ -130,6 +145,18 @@ function handleEditClose() {
   isEditPanelVisible.value = false;
   editingQuickText.value = null;
 }
+
+function handlePinEntrySuccess() {
+  if (stringStore.activeCategoryId && stringStore.activeCategoryId !== -1) {
+    stringStore.authorizeCategory(stringStore.activeCategoryId);
+  }
+  isPinEntryVisible.value = false;
+}
+
+function handlePinEntryClose() {
+  isPinEntryVisible.value = false;
+  // Keep the category selected but locked - user can try again with the button
+}
 </script>
 
 <template>
@@ -138,6 +165,17 @@ function handleEditClose() {
     v-if="stringStore.quickTexts.length === 0 && !stringStore.activeCategoryId"
     @add-text="handleAddText"
   />
+
+  <!-- Show pin entry when category is locked -->
+  <div
+    v-else-if="stringStore.isActiveCategoryLocked"
+    class="pin-required-message"
+  >
+    <div class="lock-icon">🔒</div>
+    <h3>Category Protected</h3>
+    <p>This category requires a PIN to view its contents.</p>
+    <button @click="isPinEntryVisible = true" class="unlock-btn">Enter PIN</button>
+  </div>
 
   <!-- Show message when category is selected but has no items -->
   <div
@@ -180,6 +218,14 @@ function handleEditClose() {
     @close="handleEditClose"
     @saved="handleEditClose"
     @deleted="handleEditClose"
+  />
+  
+  <PinEntryPanel
+    :is-visible="isPinEntryVisible"
+    :category-name="stringStore.getCategoryById(stringStore.activeCategoryId || 0)?.name || 'Category'"
+    :category-id="stringStore.activeCategoryId || 0"
+    @close="handlePinEntryClose"
+    @success="handlePinEntrySuccess"
   />
   
   <BottomBar />
@@ -234,6 +280,51 @@ function handleEditClose() {
 }
 
 .add-template-btn:hover {
+  opacity: 0.9;
+}
+
+.pin-required-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--color-text-secondary);
+  min-height: 50vh;
+  margin: auto;
+}
+
+.lock-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.7;
+}
+
+.pin-required-message h3 {
+  margin: 0 0 1rem 0;
+  color: var(--text);
+  font-size: 1.25rem;
+}
+
+.pin-required-message p {
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  color: var(--text-light);
+}
+
+.unlock-btn {
+  padding: 0.5rem 1rem;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: opacity 0.2s;
+}
+
+.unlock-btn:hover {
   opacity: 0.9;
 }
 
