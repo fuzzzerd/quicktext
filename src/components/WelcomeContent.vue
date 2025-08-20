@@ -63,7 +63,6 @@ function handleAddText() {
                   📃
                 </button>
                 <button class="demo-btn">💬</button>
-                <button class="demo-btn">❌</button>
               </div>
             </div>
             <div v-if="showDemo" class="demo-feedback">
@@ -87,7 +86,6 @@ function handleAddText() {
               <div class="snippet-actions">
                 <button class="demo-btn">📃</button>
                 <button class="demo-btn">💬</button>
-                <button class="demo-btn">❌</button>
               </div>
             </div>
             <div class="template-example">
@@ -196,7 +194,6 @@ function handleAddText() {
         </div>
       </div>
     </section>
-
 
     <section class="call-to-action">
       <p class="cta-text">
