@@ -24,7 +24,7 @@ const isPinEntryVisible = ref(false);
 // Watch for category changes to auto-show pin prompt
 watch(
   () => stringStore.activeCategoryId,
-  (newCategoryId) => {
+  newCategoryId => {
     if (newCategoryId && newCategoryId !== -1) {
       const category = stringStore.getCategoryById(newCategoryId);
       if (category?.pin && !stringStore.isCategoryAuthorized(newCategoryId)) {
@@ -123,13 +123,12 @@ function itemThroughTemplate(
   context: Record<string, string>
 ): string {
   for (const key in context) {
-    text = text.replace(new RegExp(`{{\\s*${key}\\s*}}`, 'g'), context[key] ?? '');
+    text = text.replace(
+      new RegExp(`{{\\s*${key}\\s*}}`, 'g'),
+      context[key] ?? ''
+    );
   }
   return text;
-}
-
-function removeItem(data: string) {
-  stringStore.removeQuickText(data);
 }
 
 function handleAddText() {
@@ -174,16 +173,23 @@ function handlePinEntryClose() {
     <div class="lock-icon">🔒</div>
     <h3>Category Protected</h3>
     <p>This category requires a PIN to view its contents.</p>
-    <button @click="isPinEntryVisible = true" class="unlock-btn">Enter PIN</button>
+    <button @click="isPinEntryVisible = true" class="unlock-btn">
+      Enter PIN
+    </button>
   </div>
 
   <!-- Show message when category is selected but has no items -->
   <div
-    v-else-if="stringStore.filteredQuickTexts.length === 0 && stringStore.activeCategoryId"
+    v-else-if="
+      stringStore.filteredQuickTexts.length === 0 &&
+      stringStore.activeCategoryId
+    "
     class="empty-category-message"
   >
     <p>No templates in this category</p>
-    <button @click="handleAddText" class="add-template-btn">Add Template</button>
+    <button @click="handleAddText" class="add-template-btn">
+      Add Template
+    </button>
   </div>
 
   <!-- Show snippets when they exist -->
@@ -199,7 +205,6 @@ function handlePinEntryClose() {
     <div class="col icons">
       <button @click.stop="copyItem(qt.text)">📃</button>
       <button @click.stop="shareItem(qt.text)">💬</button>
-      <button @click.stop="removeItem(qt.text)">❌</button>
     </div>
   </div>
 
@@ -211,7 +216,7 @@ function handlePinEntryClose() {
     @close="handleTemplateClose"
     @execute="handleTemplateExecute"
   />
-  
+
   <EditTextPanel
     :is-visible="isEditPanelVisible"
     :quick-text="editingQuickText"
@@ -219,15 +224,18 @@ function handlePinEntryClose() {
     @saved="handleEditClose"
     @deleted="handleEditClose"
   />
-  
+
   <PinEntryPanel
     :is-visible="isPinEntryVisible"
-    :category-name="stringStore.getCategoryById(stringStore.activeCategoryId || 0)?.name || 'Category'"
+    :category-name="
+      stringStore.getCategoryById(stringStore.activeCategoryId || 0)?.name ||
+      'Category'
+    "
     :category-id="stringStore.activeCategoryId || 0"
     @close="handlePinEntryClose"
     @success="handlePinEntrySuccess"
   />
-  
+
   <BottomBar />
 </template>
 

@@ -323,11 +323,13 @@ describe('Category Management', () => {
     it('should show appropriate message when filtered category has no templates', () => {
       // Delete the Work template while it's visible
       cy.get('.bottom-bar button').contains('💼').click({ force: true });
-      cy.get('.item .details').contains('Work email template')
-        .parent()
-        .find('.icons button')
-        .contains('❌')
-        .click();
+      
+      // Click on template to open edit panel
+      cy.get('.item .details').contains('Work email template').click();
+      
+      // Delete via edit panel
+      cy.get('.sliding-panel.visible .delete-link').click();
+      cy.on('window:confirm', () => true);
 
       // Should show empty category message
       cy.get('.empty-category-message').should('be.visible');
@@ -338,11 +340,13 @@ describe('Category Management', () => {
     it('should allow adding template from empty category message', () => {
       // Delete the Work template to make category empty
       cy.get('.bottom-bar button').contains('💼').click({ force: true });
-      cy.get('.item .details').contains('Work email template')
-        .parent()
-        .find('.icons button')
-        .contains('❌')
-        .click();
+      
+      // Click on template to open edit panel
+      cy.get('.item .details').contains('Work email template').click();
+      
+      // Delete via edit panel
+      cy.get('.sliding-panel.visible .delete-link').click();
+      cy.on('window:confirm', () => true);
 
       // Click add template button from empty message
       cy.get('.empty-category-message .add-template-btn').click();

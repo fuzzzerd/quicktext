@@ -36,13 +36,16 @@ describe('QuickText Add Panel', () => {
       'To be deleted'
     );
     cy.get('.sliding-panel.visible button').contains('Add').click(); // New selector targeting button by text
-    // delete the item
-    cy.get('.item')
-      .contains('.details', 'To be deleted')
-      .parent()
-      .find('.icons button')
-      .contains('❌')
-      .click();
+    
+    // delete the item - now need to open edit panel first
+    cy.get('.item .details').contains('To be deleted').click();
+    
+    // Wait for edit panel to open and click delete link
+    cy.get('.sliding-panel.visible .delete-link').click();
+    
+    // Confirm deletion
+    cy.on('window:confirm', () => true);
+    
     // assert item is removed
     cy.contains('.item .details', 'To be deleted').should('not.exist');
   });
