@@ -7,18 +7,22 @@ export const useStringStore = defineStore('stringStore', () => {
   const quickTexts = ref<QuickText[]>(
     JSON.parse(localStorage.getItem('quickTexts') || '[]')
   );
-  
+
   const categories = ref<Category[]>(
     JSON.parse(localStorage.getItem('categories') || '[]')
   );
-  
+
   const activeCategoryId = ref<number | null>(
     JSON.parse(localStorage.getItem('activeCategoryId') || 'null')
   );
-  
+
   const authorizedCategoryId = ref<number | null>(null);
 
-  function addQuickText(text: string, sort: number = 0, categoryIds?: number[]) {
+  function addQuickText(
+    text: string,
+    sort: number = 0,
+    categoryIds?: number[]
+  ) {
     const id = Date.now(); // Generate a unique id based on the current timestamp
     const newQuickText = new QuickText(text, sort, id, categoryIds);
     quickTexts.value.push(newQuickText);
@@ -45,7 +49,10 @@ export const useStringStore = defineStore('stringStore', () => {
     }
   }
 
-  function updateQuickText(id: number, updates: Partial<Omit<QuickText, 'id'>>) {
+  function updateQuickText(
+    id: number,
+    updates: Partial<Omit<QuickText, 'id'>>
+  ) {
     const index = quickTexts.value.findIndex(qt => qt.id === id);
     if (index !== -1) {
       const existing = quickTexts.value[index];
@@ -137,7 +144,10 @@ export const useStringStore = defineStore('stringStore', () => {
     return authorizedCategoryId.value === categoryId;
   }
 
-  function validateCategoryPin(categoryId: number, enteredPin: string): boolean {
+  function validateCategoryPin(
+    categoryId: number,
+    enteredPin: string
+  ): boolean {
     const category = categories.value.find(c => c.id === categoryId);
     if (!category || !category.pin) {
       return true; // No pin required
@@ -153,19 +163,21 @@ export const useStringStore = defineStore('stringStore', () => {
     if (activeCategoryId.value === null) {
       return quickTexts.value;
     }
-    
+
     // Special case for "uncategorized" - represented by id -1
     if (activeCategoryId.value === -1) {
-      return quickTexts.value.filter(qt => !qt.categoryIds || qt.categoryIds.length === 0);
+      return quickTexts.value.filter(
+        qt => !qt.categoryIds || qt.categoryIds.length === 0
+      );
     }
-    
+
     // Check if category is pin-protected and authorized
     if (!isCategoryAuthorized(activeCategoryId.value)) {
       return []; // Return empty array if category is not authorized
     }
-    
-    return quickTexts.value.filter(qt => 
-      qt.categoryIds && qt.categoryIds.includes(activeCategoryId.value!)
+
+    return quickTexts.value.filter(
+      qt => qt.categoryIds && qt.categoryIds.includes(activeCategoryId.value!)
     );
   });
 
@@ -174,7 +186,9 @@ export const useStringStore = defineStore('stringStore', () => {
   });
 
   const hasUncategorizedItems = computed(() => {
-    return quickTexts.value.some(qt => !qt.categoryIds || qt.categoryIds.length === 0);
+    return quickTexts.value.some(
+      qt => !qt.categoryIds || qt.categoryIds.length === 0
+    );
   });
 
   const shouldShowCategoryTabs = computed(() => {

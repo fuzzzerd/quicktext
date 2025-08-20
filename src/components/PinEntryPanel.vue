@@ -34,7 +34,7 @@ function handleSubmit() {
     errorMessage.value = 'Please enter a PIN';
     return;
   }
-  
+
   if (stringStore.validateCategoryPin(props.categoryId, enteredPin.value)) {
     emit('success');
   } else {
@@ -60,9 +60,10 @@ function handleKeyup(event: KeyboardEvent) {
       <h3>Enter PIN</h3>
       <p class="category-name">{{ categoryName }}</p>
       <p class="pin-description">
-        This PIN only controls viewing this category's contents. It doesn't provide encryption or secure storage.
+        This PIN only controls viewing this category's contents. It doesn't
+        provide encryption or secure storage.
       </p>
-      
+
       <div class="pin-input-container">
         <input
           v-model="enteredPin"
@@ -80,15 +81,13 @@ function handleKeyup(event: KeyboardEvent) {
         />
         <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
       </div>
-      
+
       <div class="row">
         <div class="col">
           <button class="secondary" @click="handleClose">Cancel</button>
         </div>
         <div class="col">
-          <button class="primary" @click="handleSubmit">
-            Access Category
-          </button>
+          <button class="primary" @click="handleSubmit">Access Category</button>
         </div>
       </div>
     </div>

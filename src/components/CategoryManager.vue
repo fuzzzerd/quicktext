@@ -6,7 +6,7 @@
         <button class="close-btn" @click="emit('close')">✕</button>
       </div>
     </div>
-    
+
     <div class="add-category-row">
       <div class="drag-handle-placeholder"></div>
       <div class="category-info">
@@ -33,13 +33,19 @@
         />
       </div>
       <div class="category-actions">
-        <button @click="addNewCategory" :disabled="!newCategoryName.trim()" class="add-button">➕</button>
+        <button
+          @click="addNewCategory"
+          :disabled="!newCategoryName.trim()"
+          class="add-button"
+        >
+          ➕
+        </button>
       </div>
     </div>
 
     <div class="categories-list" ref="categoriesList">
-      <div 
-        v-for="(category, index) in stringStore.sortedCategories" 
+      <div
+        v-for="(category, index) in stringStore.sortedCategories"
         :key="category.id"
         class="category-item"
         :data-category-id="category.id"
@@ -50,23 +56,38 @@
         @dragend="handleDragEnd"
       >
         <div class="drag-handle">☰</div>
-        
+
         <div class="category-info">
           <input
             :value="category.icon || ''"
-            @input="updateCategoryIcon(category.id, ($event.target as HTMLInputElement).value)"
+            @input="
+              updateCategoryIcon(
+                category.id,
+                ($event.target as HTMLInputElement).value
+              )
+            "
             class="live-edit-icon"
             placeholder="📝"
           />
           <input
             :value="category.name"
-            @input="updateCategoryName(category.id, ($event.target as HTMLInputElement).value)"
+            @input="
+              updateCategoryName(
+                category.id,
+                ($event.target as HTMLInputElement).value
+              )
+            "
             class="live-edit-name"
             placeholder="Category name"
           />
           <input
             :value="category.pin || ''"
-            @input="updateCategoryPin(category.id, ($event.target as HTMLInputElement).value)"
+            @input="
+              updateCategoryPin(
+                category.id,
+                ($event.target as HTMLInputElement).value
+              )
+            "
             type="text"
             inputmode="numeric"
             pattern="[0-9]*"
@@ -76,13 +97,14 @@
             title="Optional PIN to view this category's contents. This only adds viewing protection, not encryption."
           />
         </div>
-        
+
         <div class="category-actions">
-          <button @click="deleteCategory(category.id)" class="delete-btn">🗑️</button>
+          <button @click="deleteCategory(category.id)" class="delete-btn">
+            🗑️
+          </button>
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -93,7 +115,7 @@ import { useStringStore } from '../stores/stringStore';
 const stringStore = useStringStore();
 
 const emit = defineEmits<{
-  close: []
+  close: [];
 }>();
 
 const newCategoryName = ref('');
@@ -103,20 +125,24 @@ const draggedIndex = ref<number | null>(null);
 
 function addNewCategory() {
   if (!newCategoryName.value.trim()) return;
-  
+
   stringStore.addCategory(
     newCategoryName.value.trim(),
     newCategoryIcon.value.trim() || undefined,
     newCategoryPin.value.trim() || undefined
   );
-  
+
   newCategoryName.value = '';
   newCategoryIcon.value = '';
   newCategoryPin.value = '';
 }
 
 function deleteCategory(id: number) {
-  if (confirm('Are you sure you want to delete this category? Templates will become uncategorized.')) {
+  if (
+    confirm(
+      'Are you sure you want to delete this category? Templates will become uncategorized.'
+    )
+  ) {
     stringStore.removeCategory(id);
   }
 }
@@ -157,17 +183,17 @@ function handleDragOver(event: DragEvent) {
 
 function handleDrop(event: DragEvent, dropIndex: number) {
   event.preventDefault();
-  
+
   if (draggedIndex.value === null || draggedIndex.value === dropIndex) return;
-  
+
   const categories = [...stringStore.sortedCategories];
   const draggedItem = categories[draggedIndex.value];
-  
+
   if (!draggedItem) return; // Guard against undefined
-  
+
   categories.splice(draggedIndex.value, 1);
   categories.splice(dropIndex, 0, draggedItem);
-  
+
   stringStore.reorderCategories(categories);
   draggedIndex.value = null;
 }
@@ -256,7 +282,9 @@ function handleDragEnd() {
   border: none;
   cursor: pointer;
   font-size: 1rem;
-  transition: transform 0.2s, opacity 0.2s;
+  transition:
+    transform 0.2s,
+    opacity 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -313,7 +341,7 @@ function handleDragEnd() {
   line-height: 1;
 }
 
-.category-item[draggable="true"]:active .drag-handle {
+.category-item[draggable='true']:active .drag-handle {
   cursor: grabbing;
 }
 
@@ -342,7 +370,9 @@ function handleDragEnd() {
   text-align: center;
   font-size: 1.2rem;
   border-radius: 4px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -360,7 +390,9 @@ function handleDragEnd() {
   font-size: 1rem;
   font-weight: 500;
   border-radius: 4px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
   display: flex;
   align-items: center;
 }
@@ -375,7 +407,9 @@ function handleDragEnd() {
   color: var(--text);
   font-size: 1rem;
   border-radius: 4px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -444,18 +478,17 @@ function handleDragEnd() {
   transform: scale(1.1);
 }
 
-
 /* Mobile responsive adjustments */
 @media (max-width: 768px) {
   .category-manager {
     max-height: 85vh;
   }
-  
+
   .add-category-row,
   .category-item {
     padding: 0.5rem;
   }
-  
+
   .drag-handle,
   .drag-handle-placeholder {
     margin-right: 0.5rem;

@@ -48,7 +48,13 @@ function toggleCategory(categoryId: number) {
 </script>
 
 <template>
-  <button class="fab" @click="toggleAddPanel" :style="{ bottom: fabBottomPosition }">➕</button>
+  <button
+    class="fab"
+    @click="toggleAddPanel"
+    :style="{ bottom: fabBottomPosition }"
+  >
+    ➕
+  </button>
 
   <SlidingPanel
     :is-visible="isAddPanelVisible"
@@ -66,7 +72,7 @@ function toggleCategory(categoryId: number) {
         ></textarea>
       </div>
     </div>
-    
+
     <div v-if="stringStore.categories.length > 0" class="row">
       <div class="col col-large">
         <label>Categories</label>
@@ -75,7 +81,10 @@ function toggleCategory(categoryId: number) {
             v-for="category in stringStore.sortedCategories"
             :key="category.id"
             type="button"
-            :class="['category-chip', { selected: selectedCategoryIds.includes(category.id) }]"
+            :class="[
+              'category-chip',
+              { selected: selectedCategoryIds.includes(category.id) }
+            ]"
             @click="toggleCategory(category.id)"
           >
             <span v-if="category.icon">{{ category.icon }}</span>
