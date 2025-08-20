@@ -45,13 +45,12 @@ describe('Welcome Content Panel', () => {
     cy.get('main .welcome-container').should('not.exist');
     cy.get('.item .details').should('contain.text', 'Temporary template');
 
-    // Remove the template
-    cy.get('.item')
-      .contains('.details', 'Temporary template')
-      .parent()
-      .find('.icons button')
-      .contains('❌')
-      .click();
+    // Remove the template - click to open edit panel first
+    cy.get('.item .details').contains('Temporary template').click();
+    
+    // Delete via edit panel
+    cy.get('.sliding-panel.visible .delete-link').click();
+    cy.on('window:confirm', () => true);
 
     // Welcome content should appear again in main area
     cy.get('main .welcome-container').should('be.visible');
