@@ -2,7 +2,7 @@
   <SlidingPanel :is-visible="isVisible" @close="handleClose">
     <div class="edit-panel">
       <h3>Edit Template</h3>
-      
+
       <div class="row">
         <div class="col col-large">
           <label for="editTextEntry">Text</label>
@@ -13,7 +13,7 @@
           ></textarea>
         </div>
       </div>
-      
+
       <div v-if="stringStore.categories.length > 0" class="row">
         <div class="col col-large">
           <label>Categories</label>
@@ -22,7 +22,10 @@
               v-for="category in stringStore.sortedCategories"
               :key="category.id"
               type="button"
-              :class="['category-chip', { selected: localCategoryIds.includes(category.id) }]"
+              :class="[
+                'category-chip',
+                { selected: localCategoryIds.includes(category.id) }
+              ]"
               @click="toggleCategory(category.id)"
             >
               <span v-if="category.icon">{{ category.icon }}</span>
@@ -31,15 +34,13 @@
           </div>
         </div>
       </div>
-      
+
       <div class="row">
         <div class="col">
+          <a class="delete-link" @click="handleDelete">Delete template</a>
+        </div>
+        <div class="col-right">
           <button class="secondary" @click="handleClose">Cancel</button>
-        </div>
-        <div class="col">
-          <button class="danger" @click="handleDelete">Delete</button>
-        </div>
-        <div class="col">
           <button class="primary" @click="handleSave">Save</button>
         </div>
       </div>
@@ -68,12 +69,17 @@ const stringStore = useStringStore();
 const localText = ref('');
 const localCategoryIds = ref<number[]>([]);
 
-watch(() => props.quickText, (newQuickText) => {
-  if (newQuickText) {
-    localText.value = newQuickText.text;
-    localCategoryIds.value = newQuickText.categoryIds ? [...newQuickText.categoryIds] : [];
+watch(
+  () => props.quickText,
+  newQuickText => {
+    if (newQuickText) {
+      localText.value = newQuickText.text;
+      localCategoryIds.value = newQuickText.categoryIds
+        ? [...newQuickText.categoryIds]
+        : [];
+    }
   }
-});
+);
 
 function handleTextChange() {
   // Text is bound via v-model, no additional action needed
@@ -93,7 +99,8 @@ function handleSave() {
     // Update the existing quick text
     stringStore.updateQuickText(props.quickText.id, {
       text: localText.value.trim(),
-      categoryIds: localCategoryIds.value.length > 0 ? localCategoryIds.value : undefined
+      categoryIds:
+        localCategoryIds.value.length > 0 ? localCategoryIds.value : undefined
     });
     emit('saved');
     handleClose();
@@ -101,7 +108,10 @@ function handleSave() {
 }
 
 function handleDelete() {
-  if (props.quickText && confirm('Are you sure you want to delete this template?')) {
+  if (
+    props.quickText &&
+    confirm('Are you sure you want to delete this template?')
+  ) {
     stringStore.removeQuickTextById(props.quickText.id);
     emit('deleted');
     handleClose();
@@ -185,14 +195,16 @@ textarea {
   box-shadow: none;
 }
 
-.danger {
-  background-color: #dc3545;
-  color: white;
-  border: none;
+.delete-link {
+  color: #dc3545;
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: opacity 0.2s;
 }
 
-.danger:hover {
-  background-color: #c82333;
+.delete-link:hover {
+  opacity: 0.8;
 }
 
 .row {
@@ -203,7 +215,14 @@ textarea {
   margin-bottom: 0;
   display: flex;
   gap: 0.5rem;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.col-right {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 }
 
 label {
