@@ -15,6 +15,8 @@ export const useStringStore = defineStore('stringStore', () => {
   const activeCategoryId = ref<number | null>(
     JSON.parse(localStorage.getItem('activeCategoryId') || 'null')
   );
+  
+  const authorizedCategoryId = ref<number | null>(null);
 
   function addQuickText(text: string, sort: number = 0, categoryIds?: number[]) {
     const id = Date.now(); // Generate a unique id based on the current timestamp
@@ -60,10 +62,10 @@ export const useStringStore = defineStore('stringStore', () => {
     }
   }
 
-  function addCategory(name: string, icon?: string) {
+  function addCategory(name: string, icon?: string, pin?: string) {
     const id = Date.now();
     const sortOrder = categories.value.length;
-    const newCategory = new Category(id, name, sortOrder, icon);
+    const newCategory = new Category(id, name, sortOrder, icon, pin);
     categories.value.push(newCategory);
     saveCategoriesLocalStorage();
     return newCategory;
@@ -79,6 +81,7 @@ export const useStringStore = defineStore('stringStore', () => {
           name: existing.name,
           sortOrder: existing.sortOrder,
           icon: existing.icon,
+          pin: existing.pin,
           ...updates
         };
         saveCategoriesLocalStorage();
@@ -114,8 +117,36 @@ export const useStringStore = defineStore('stringStore', () => {
   }
 
   function setActiveCategory(categoryId: number | null) {
+    // Reset authorization when switching categories
+    if (categoryId !== activeCategoryId.value) {
+      authorizedCategoryId.value = null;
+    }
     activeCategoryId.value = categoryId;
     localStorage.setItem('activeCategoryId', JSON.stringify(categoryId));
+  }
+
+  function authorizeCategory(categoryId: number) {
+    authorizedCategoryId.value = categoryId;
+  }
+
+  function isCategoryAuthorized(categoryId: number): boolean {
+    const category = categories.value.find(c => c.id === categoryId);
+    if (!category || !category.pin) {
+      return true; // No pin required
+    }
+    return authorizedCategoryId.value === categoryId;
+  }
+
+  function validateCategoryPin(categoryId: number, enteredPin: string): boolean {
+    const category = categories.value.find(c => c.id === categoryId);
+    if (!category || !category.pin) {
+      return true; // No pin required
+    }
+    return category.pin === enteredPin;
+  }
+
+  function getCategoryById(id: number): Category | undefined {
+    return categories.value.find(c => c.id === id);
   }
 
   const filteredQuickTexts = computed(() => {
@@ -126,6 +157,11 @@ export const useStringStore = defineStore('stringStore', () => {
     // Special case for "uncategorized" - represented by id -1
     if (activeCategoryId.value === -1) {
       return quickTexts.value.filter(qt => !qt.categoryIds || qt.categoryIds.length === 0);
+    }
+    
+    // Check if category is pin-protected and authorized
+    if (!isCategoryAuthorized(activeCategoryId.value)) {
+      return []; // Return empty array if category is not authorized
     }
     
     return quickTexts.value.filter(qt => 
@@ -146,6 +182,13 @@ export const useStringStore = defineStore('stringStore', () => {
     return categories.value.length > 0;
   });
 
+  const isActiveCategoryLocked = computed(() => {
+    if (activeCategoryId.value === null || activeCategoryId.value === -1) {
+      return false;
+    }
+    return !isCategoryAuthorized(activeCategoryId.value);
+  });
+
   function saveToLocalStorage() {
     localStorage.setItem('quickTexts', JSON.stringify(quickTexts.value));
   }
@@ -162,6 +205,7 @@ export const useStringStore = defineStore('stringStore', () => {
     sortedCategories,
     hasUncategorizedItems,
     shouldShowCategoryTabs,
+    isActiveCategoryLocked,
     addQuickText,
     removeQuickText,
     getQuickTextById,
@@ -171,6 +215,10 @@ export const useStringStore = defineStore('stringStore', () => {
     updateCategory,
     removeCategory,
     reorderCategories,
-    setActiveCategory
+    setActiveCategory,
+    authorizeCategory,
+    isCategoryAuthorized,
+    validateCategoryPin,
+    getCategoryById
   };
 });

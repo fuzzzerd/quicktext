@@ -3,7 +3,7 @@
     <div class="category-header">
       <div class="header-content">
         <h2>Manage Categories</h2>
-        <button class="close-btn" @click="$emit('close')">✕</button>
+        <button class="close-btn" @click="emit('close')">✕</button>
       </div>
     </div>
     
@@ -20,6 +20,16 @@
           @keyup.enter="addNewCategory"
           class="live-edit-name"
           placeholder="Category name"
+        />
+        <input
+          v-model="newCategoryPin"
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9]*"
+          autocomplete="off"
+          class="live-edit-pin pin-mask"
+          placeholder="PIN (optional)"
+          title="Optional PIN to view this category's contents. This only adds viewing protection, not encryption."
         />
       </div>
       <div class="category-actions">
@@ -54,6 +64,17 @@
             class="live-edit-name"
             placeholder="Category name"
           />
+          <input
+            :value="category.pin || ''"
+            @input="updateCategoryPin(category.id, ($event.target as HTMLInputElement).value)"
+            type="text"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            autocomplete="off"
+            class="live-edit-pin pin-mask"
+            placeholder="PIN (optional)"
+            title="Optional PIN to view this category's contents. This only adds viewing protection, not encryption."
+          />
         </div>
         
         <div class="category-actions">
@@ -68,7 +89,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useStringStore } from '../stores/stringStore';
-import type Category from '../models/category';
 
 const stringStore = useStringStore();
 
@@ -78,6 +98,7 @@ const emit = defineEmits<{
 
 const newCategoryName = ref('');
 const newCategoryIcon = ref('');
+const newCategoryPin = ref('');
 const draggedIndex = ref<number | null>(null);
 
 function addNewCategory() {
@@ -85,11 +106,13 @@ function addNewCategory() {
   
   stringStore.addCategory(
     newCategoryName.value.trim(),
-    newCategoryIcon.value.trim() || undefined
+    newCategoryIcon.value.trim() || undefined,
+    newCategoryPin.value.trim() || undefined
   );
   
   newCategoryName.value = '';
   newCategoryIcon.value = '';
+  newCategoryPin.value = '';
 }
 
 function deleteCategory(id: number) {
@@ -109,6 +132,12 @@ function updateCategoryName(categoryId: number, newName: string) {
 function updateCategoryIcon(categoryId: number, newIcon: string) {
   stringStore.updateCategory(categoryId, {
     icon: newIcon.trim() || undefined
+  });
+}
+
+function updateCategoryPin(categoryId: number, newPin: string) {
+  stringStore.updateCategory(categoryId, {
+    pin: newPin.trim() || undefined
   });
 }
 
@@ -336,13 +365,38 @@ function handleDragEnd() {
   align-items: center;
 }
 
+.live-edit-pin {
+  width: 80px;
+  min-width: 80px;
+  height: 36px;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--text);
+  font-size: 1rem;
+  border-radius: 4px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* Mask PIN input to show dots */
+.pin-mask {
+  -webkit-text-security: disc;
+  font-family: text-security-disc;
+  letter-spacing: 0.2em;
+}
+
 .live-edit-icon:hover,
-.live-edit-name:hover {
+.live-edit-name:hover,
+.live-edit-pin:hover {
   border-color: var(--accent);
 }
 
 .live-edit-icon:focus,
-.live-edit-name:focus {
+.live-edit-name:focus,
+.live-edit-pin:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0.5rem var(--accent-dark);
@@ -350,7 +404,8 @@ function handleDragEnd() {
 
 /* Ensure inputs don't affect parent layout */
 .live-edit-icon,
-.live-edit-name {
+.live-edit-name,
+.live-edit-pin {
   box-sizing: border-box;
   line-height: 1;
   vertical-align: middle;
