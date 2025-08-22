@@ -188,6 +188,14 @@ export const useStringStore = defineStore('stringStore', () => {
     saveCategoriesStorage();
   }
 
+  function reorderQuickTexts(newOrder: QuickText[]) {
+    newOrder.forEach((qt, index) => {
+      qt.sort = index;
+    });
+    quickTexts.value = [...newOrder];
+    saveToStorage();
+  }
+
   function setActiveCategory(categoryId: number | null) {
     // Reset authorization when switching categories
     if (categoryId !== activeCategoryId.value) {
@@ -225,25 +233,28 @@ export const useStringStore = defineStore('stringStore', () => {
   }
 
   const filteredQuickTexts = computed(() => {
-    if (activeCategoryId.value === null) {
-      return quickTexts.value;
-    }
+    let filtered: QuickText[] = [];
 
-    // Special case for "uncategorized" - represented by id -1
-    if (activeCategoryId.value === -1) {
-      return quickTexts.value.filter(
+    if (activeCategoryId.value === null) {
+      filtered = quickTexts.value;
+    } else if (activeCategoryId.value === -1) {
+      // Special case for "uncategorized" - represented by id -1
+      filtered = quickTexts.value.filter(
         qt => !qt.categoryIds || qt.categoryIds.length === 0
+      );
+    } else {
+      // Check if category is pin-protected and authorized
+      if (!isCategoryAuthorized(activeCategoryId.value)) {
+        return []; // Return empty array if category is not authorized
+      }
+
+      filtered = quickTexts.value.filter(
+        qt => qt.categoryIds && qt.categoryIds.includes(activeCategoryId.value!)
       );
     }
 
-    // Check if category is pin-protected and authorized
-    if (!isCategoryAuthorized(activeCategoryId.value)) {
-      return []; // Return empty array if category is not authorized
-    }
-
-    return quickTexts.value.filter(
-      qt => qt.categoryIds && qt.categoryIds.includes(activeCategoryId.value!)
-    );
+    // Sort by sort property
+    return [...filtered].sort((a, b) => a.sort - b.sort);
   });
 
   const sortedCategories = computed(() => {
@@ -334,6 +345,7 @@ export const useStringStore = defineStore('stringStore', () => {
     getQuickTextById,
     removeQuickTextById,
     updateQuickText,
+    reorderQuickTexts,
     addCategory,
     updateCategory,
     removeCategory,
