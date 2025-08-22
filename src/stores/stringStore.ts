@@ -122,13 +122,19 @@ export const useStringStore = defineStore('stringStore', () => {
     if (index !== -1) {
       const existing = quickTexts.value[index];
       if (existing) {
-        quickTexts.value[index] = {
+        const updatedQuickText = {
           text: existing.text,
           sort: existing.sort,
           id: existing.id,
           categoryIds: existing.categoryIds,
           ...updates
         };
+        // Create a new array to ensure reactivity
+        quickTexts.value = [
+          ...quickTexts.value.slice(0, index),
+          updatedQuickText,
+          ...quickTexts.value.slice(index + 1)
+        ];
         saveToStorage();
       }
     }
