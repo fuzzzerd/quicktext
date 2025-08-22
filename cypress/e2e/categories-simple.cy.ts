@@ -1,8 +1,10 @@
-describe('Category Management - Simple Tests', () => {
-  beforeEach(() => {
-    cy.clearLocalStorage();
-    cy.visit('/');
-  });
+['localStorage', 'indexedDB'].forEach(storageType => {
+  describe(`Category Management - Simple Tests - ${storageType}`, () => {
+    beforeEach(() => {
+      cy.clearAllStorage();
+      cy.setStorageTypeAndWait(storageType);
+      cy.visit('/');
+    });
 
   it('should create a category and see bottom bar', () => {
     // Create a single category
@@ -58,4 +60,5 @@ describe('Category Management - Simple Tests', () => {
     // Verify template exists
     cy.get('.item .details').should('contain.text', 'Work template');
   });
+});
 });

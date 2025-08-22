@@ -1,8 +1,10 @@
-describe('Template Variable Panel', () => {
-  beforeEach(() => {
-    cy.clearLocalStorage();
-    cy.visit('/');
-  });
+['localStorage', 'indexedDB'].forEach(storageType => {
+  describe(`Template Variable Panel - ${storageType}`, () => {
+    beforeEach(() => {
+      cy.clearAllStorage();
+      cy.setStorageTypeAndWait(storageType);
+      cy.visit('/');
+    });
 
   it('should not show template panel for text without variables', () => {
     // Add simple text without variables
@@ -54,4 +56,5 @@ describe('Template Variable Panel', () => {
     // Should show template panel with exactly 5 input fields
     cy.get('.variable-input').should('have.length', 5);
   });
+});
 });
