@@ -1,6 +1,6 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
-import ShareReceiver from '@/components/ShareReceiver.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import HomeView from '@/views/HomeView.vue';
+import ShareReceiver from '@/components/ShareReceiver.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,6 +16,6 @@ const router = createRouter({
       component: ShareReceiver
     }
   ]
-})
+});
 
-export default router
+export default router;

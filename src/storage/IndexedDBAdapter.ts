@@ -49,7 +49,7 @@ export class IndexedDBAdapter implements StorageAdapter {
     return new Promise((resolve, reject) => {
       const transaction = db.transaction([this.storeName], 'readwrite');
       const store = transaction.objectStore(this.storeName);
-      
+
       // Convert to plain object to avoid proxy cloning issues
       const plainValue = JSON.parse(JSON.stringify(value));
       const request = store.put(plainValue, key);

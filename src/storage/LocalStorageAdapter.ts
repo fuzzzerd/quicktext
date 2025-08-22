@@ -35,11 +35,11 @@ export class LocalStorageAdapter implements StorageAdapter {
     // Only clear our application's data keys, not metadata like storageType
     const appKeys = [
       'quickTexts',
-      'categories', 
+      'categories',
       'activeCategoryId',
       'settings'
     ];
-    
+
     for (const key of appKeys) {
       localStorage.removeItem(key);
     }

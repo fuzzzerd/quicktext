@@ -129,7 +129,6 @@ async function handleStorageTypeChange() {
   }
 }
 
-
 async function clearAllData() {
   const confirmed = confirm(
     'Are you sure you want to clear all data? This action cannot be undone.'

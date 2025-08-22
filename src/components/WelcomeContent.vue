@@ -26,7 +26,9 @@ function handleAddText() {
   <div class="welcome-container">
     <section class="hero">
       <h2>Welcome to QuickText!</h2>
-      <p class="subtitle">Ultra-lightweight, privacy-first text snippet manager</p>
+      <p class="subtitle">
+        Ultra-lightweight, privacy-first text snippet manager
+      </p>
     </section>
 
     <section class="getting-started">
@@ -235,14 +237,23 @@ section {
   margin-bottom: 2rem;
 }
 
-h3, h4, h5 {
+h3,
+h4,
+h5 {
   color: var(--accent);
   margin-bottom: 0.5rem;
 }
 
-h3 { font-size: 1.3rem; margin-bottom: 1rem; }
-h4 { font-size: 1.1rem; }
-h5 { font-size: 1rem; }
+h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+h4 {
+  font-size: 1.1rem;
+}
+h5 {
+  font-size: 1rem;
+}
 
 .fab-demo {
   display: inline-block;
@@ -267,7 +278,8 @@ h5 { font-size: 1rem; }
   border-bottom: 1px dashed var(--border);
 }
 
-.feature-grid, .example-grid {
+.feature-grid,
+.example-grid {
   display: grid;
   gap: 1.5rem;
   margin-top: 1rem;
@@ -277,7 +289,9 @@ h5 { font-size: 1rem; }
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
-.feature-card, .example-card, .github-card {
+.feature-card,
+.example-card,
+.github-card {
   border: 1px solid var(--border);
   border-radius: 0.5rem;
   padding: 1.5rem;
@@ -289,7 +303,8 @@ h5 { font-size: 1rem; }
   border-radius: 0.25rem;
 }
 
-.snippet-preview, .example-text {
+.snippet-preview,
+.example-text {
   border: 1px dashed var(--accent);
   border-radius: 0.25rem;
   padding: 0.75rem;
@@ -351,8 +366,14 @@ h5 { font-size: 1rem; }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .template-example {
@@ -382,7 +403,9 @@ h5 { font-size: 1rem; }
   margin: 0;
 }
 
-.privacy-benefits, .pwa-benefits, .github-benefits {
+.privacy-benefits,
+.pwa-benefits,
+.github-benefits {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
@@ -421,7 +444,8 @@ h5 { font-size: 1rem; }
   font-weight: 500;
 }
 
-.add-text-btn, .github-link {
+.add-text-btn,
+.github-link {
   background: var(--accent);
   color: white;
   border: none;
@@ -442,13 +466,15 @@ h5 { font-size: 1rem; }
   margin-top: 1rem;
 }
 
-.add-text-btn:hover, .github-link:hover {
+.add-text-btn:hover,
+.github-link:hover {
   background: var(--accent-dark);
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.add-text-btn:active, .github-link:active {
+.add-text-btn:active,
+.github-link:active {
   transform: translateY(0);
 }
 
@@ -466,7 +492,8 @@ code {
   margin: 2rem 0;
 }
 
-.example-text span, .snippet-text span {
+.example-text span,
+.snippet-text span {
   background: var(--accent-background);
   color: var(--accent);
   font-family: monospace;
@@ -476,11 +503,28 @@ code {
 }
 
 @media (max-width: 768px) {
-  .feature-grid { grid-template-columns: 1fr; }
-  .privacy-benefits, .pwa-benefits, .github-benefits { grid-template-columns: 1fr; }
-  .variable-form { flex-direction: column; }
-  .snippet-preview { flex-direction: column; gap: 0.5rem; align-items: stretch; }
-  .snippet-text { margin-right: 0; }
-  .snippet-actions { flex-direction: row; justify-content: center; }
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+  .privacy-benefits,
+  .pwa-benefits,
+  .github-benefits {
+    grid-template-columns: 1fr;
+  }
+  .variable-form {
+    flex-direction: column;
+  }
+  .snippet-preview {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+  .snippet-text {
+    margin-right: 0;
+  }
+  .snippet-actions {
+    flex-direction: row;
+    justify-content: center;
+  }
 }
 </style>

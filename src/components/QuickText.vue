@@ -20,6 +20,7 @@ const templateVariables = ref<string[]>([]);
 const isEditPanelVisible = ref(false);
 const editingQuickText = ref<QuickText | null>(null);
 const isPinEntryVisible = ref(false);
+const draggedIndex = ref<number | null>(null);
 
 // Watch for category changes to auto-show pin prompt
 watch(
@@ -156,6 +157,41 @@ function handlePinEntryClose() {
   isPinEntryVisible.value = false;
   // Keep the category selected but locked - user can try again with the button
 }
+
+function handleDragStart(event: DragEvent, index: number) {
+  draggedIndex.value = index;
+  if (event.dataTransfer) {
+    event.dataTransfer.effectAllowed = 'move';
+  }
+}
+
+function handleDragOver(event: DragEvent) {
+  event.preventDefault();
+  if (event.dataTransfer) {
+    event.dataTransfer.dropEffect = 'move';
+  }
+}
+
+function handleDrop(event: DragEvent, dropIndex: number) {
+  event.preventDefault();
+
+  if (draggedIndex.value === null || draggedIndex.value === dropIndex) return;
+
+  const templates = [...stringStore.filteredQuickTexts];
+  const draggedItem = templates[draggedIndex.value];
+
+  if (!draggedItem) return; // Guard against undefined
+
+  templates.splice(draggedIndex.value, 1);
+  templates.splice(dropIndex, 0, draggedItem);
+
+  stringStore.reorderQuickTexts(templates);
+  draggedIndex.value = null;
+}
+
+function handleDragEnd() {
+  draggedIndex.value = null;
+}
 </script>
 
 <template>
@@ -196,9 +232,16 @@ function handlePinEntryClose() {
   <div
     v-else
     class="row fill-width item"
-    v-for="qt in stringStore.filteredQuickTexts"
+    v-for="(qt, index) in stringStore.filteredQuickTexts"
     :key="qt.id"
+    :data-template-id="qt.id"
+    draggable="true"
+    @dragstart="handleDragStart($event, index)"
+    @dragover="handleDragOver"
+    @drop="handleDrop($event, index)"
+    @dragend="handleDragEnd"
   >
+    <div class="drag-handle">☰</div>
     <div class="col details" @click="startEdit(qt)">
       {{ qt.text }}
     </div>
@@ -339,5 +382,37 @@ function handlePinEntryClose() {
 /* Add padding to bottom when category tabs are visible */
 :global(.quicktext-container) {
   padding-bottom: 60px;
+}
+
+/* Drag and drop styling */
+.item {
+  cursor: move;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.drag-handle {
+  color: var(--text-light);
+  cursor: grab;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0.5rem;
+  margin: -0.5rem 0;
+}
+
+.item[draggable='true']:active .drag-handle {
+  cursor: grabbing;
+}
+
+.item:hover {
+  background-color: var(--accent-background);
 }
 </style>
