@@ -35,6 +35,21 @@
         </div>
       </div>
 
+      <div class="row sort-row">
+        <div class="col">
+          <label for="sortOrder">Sort Order</label>
+          <input
+            id="sortOrder"
+            v-model.number="localSort"
+            type="number"
+            min="0"
+            step="1"
+            class="sort-input"
+            title="Position in the template list (lower numbers appear first)"
+          />
+        </div>
+      </div>
+
       <div class="row">
         <div class="col">
           <a class="delete-link" @click="handleDelete">Delete template</a>
@@ -68,6 +83,7 @@ const emit = defineEmits<{
 const stringStore = useStringStore();
 const localText = ref('');
 const localCategoryIds = ref<number[]>([]);
+const localSort = ref(0);
 
 watch(
   () => props.quickText,
@@ -77,6 +93,7 @@ watch(
       localCategoryIds.value = newQuickText.categoryIds
         ? [...newQuickText.categoryIds]
         : [];
+      localSort.value = newQuickText.sort;
     }
   }
 );
@@ -99,6 +116,7 @@ function handleSave() {
     // Update the existing quick text
     stringStore.updateQuickText(props.quickText.id, {
       text: localText.value.trim(),
+      sort: localSort.value,
       categoryIds:
         localCategoryIds.value.length > 0 ? localCategoryIds.value : undefined
     });
@@ -121,6 +139,7 @@ function handleDelete() {
 function handleClose() {
   localText.value = '';
   localCategoryIds.value = [];
+  localSort.value = 0;
   emit('close');
 }
 </script>
@@ -230,5 +249,33 @@ label {
   margin-bottom: 0.5rem;
   color: var(--text);
   font-weight: 500;
+}
+
+.sort-row {
+  margin-bottom: 0.75rem;
+}
+
+.sort-row label {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-bottom: 0.25rem;
+}
+
+.sort-input {
+  width: 80px;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--background);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9rem;
+  transition: border-color 0.2s;
+}
+
+.sort-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-background);
 }
 </style>

@@ -7,7 +7,7 @@ export const useSettingsStore = defineStore('settingsStore', () => {
   // Initialize storage manager with saved preference or auto-detect
   const savedStorageTypeRaw = localStorage.getItem('storageType');
   let savedStorageType: StorageType | null = null;
-  
+
   // Handle both raw string and JSON formatted storage type
   if (savedStorageTypeRaw) {
     try {
@@ -18,7 +18,7 @@ export const useSettingsStore = defineStore('settingsStore', () => {
       savedStorageType = savedStorageTypeRaw as StorageType;
     }
   }
-  
+
   const initialStorageType = savedStorageType || StorageType.LOCAL_STORAGE;
 
   const storageManager = new StorageManager(initialStorageType);
