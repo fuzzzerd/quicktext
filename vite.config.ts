@@ -35,7 +35,16 @@ export default defineConfig({
             sizes: '512x512', // multiple sizes
             type: 'image/png'
           }
-        ]
+        ],
+        share_target: {
+          action: '/share',
+          method: 'GET',
+          params: {
+            title: 'title',
+            text: 'text',
+            url: 'url'
+          }
+        }
       }
     })
   ],

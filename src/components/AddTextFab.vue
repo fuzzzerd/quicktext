@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import SlidingPanel from './SlidingPanel.vue';
-import { ref, useTemplateRef, computed } from 'vue';
+import { ref, useTemplateRef, computed, watch, onMounted } from 'vue';
 import { useStringStore } from '@/stores/stringStore';
+import { useShareHandler } from '@/composables/useShareHandler';
 
 const newTextEntry = useTemplateRef('newTextEntry');
 const isAddPanelVisible = ref(false);
 const stringModel = ref('');
 const selectedCategoryIds = ref<number[]>([]);
 const stringStore = useStringStore();
+const { hasSharedData, consumeSharedData } = useShareHandler();
+const wasSharedContent = ref(false);
 
 const fabBottomPosition = computed(() => {
   return stringStore.shouldShowCategoryTabs ? '3.5rem' : '1rem';
@@ -34,6 +37,7 @@ function addMsg() {
   );
   stringModel.value = '';
   selectedCategoryIds.value = [];
+  wasSharedContent.value = false;
   isAddPanelVisible.value = false;
 }
 
@@ -45,6 +49,43 @@ function toggleCategory(categoryId: number) {
     selectedCategoryIds.value.push(categoryId);
   }
 }
+
+function handleSharedData() {
+  if (hasSharedData.value) {
+    const sharedContent = consumeSharedData();
+    if (sharedContent) {
+      stringModel.value = sharedContent;
+      wasSharedContent.value = true;
+      isAddPanelVisible.value = true;
+
+      // Focus the textarea after the panel opens
+      setTimeout(() => {
+        if (newTextEntry.value) {
+          newTextEntry.value.focus();
+          // Move cursor to end of text
+          newTextEntry.value.setSelectionRange(
+            newTextEntry.value.value.length,
+            newTextEntry.value.value.length
+          );
+        }
+      }, 100);
+    }
+  }
+}
+
+// Check for shared data on mount
+onMounted(() => {
+  handleSharedData();
+});
+
+// Watch for shared data and automatically open panel with pre-populated content
+watch(
+  hasSharedData,
+  () => {
+    handleSharedData();
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
@@ -62,13 +103,16 @@ function toggleCategory(categoryId: number) {
   >
     <div class="row">
       <div class="col col-large">
-        <label for="textEntry">Enter text</label>
+        <label for="textEntry">
+          {{ wasSharedContent ? '📤 Shared content' : 'Enter text' }}
+        </label>
         <textarea
           ref="newTextEntry"
           id="textEntry"
           type="text"
           name="msgAdd"
           v-model="stringModel"
+          :class="{ 'shared-content': wasSharedContent }"
         ></textarea>
       </div>
     </div>
@@ -101,6 +145,7 @@ function toggleCategory(categoryId: number) {
             isAddPanelVisible = false;
             stringModel = '';
             selectedCategoryIds = [];
+            wasSharedContent = false;
           "
         >
           Cancel
@@ -146,6 +191,12 @@ function toggleCategory(categoryId: number) {
 
 textarea {
   height: 10rem;
+}
+
+textarea.shared-content {
+  border-color: var(--accent);
+  background-color: rgba(45, 42, 51, 0.1);
+  border-width: 2px;
 }
 
 .category-selector {
