@@ -26,7 +26,7 @@ function handleAddText() {
   <div class="welcome-container">
     <section class="hero">
       <h2>Welcome to QuickText!</h2>
-      <p class="subtitle">Your privacy-first, offline text snippet manager</p>
+      <p class="subtitle">Ultra-lightweight, privacy-first text snippet manager</p>
     </section>
 
     <section class="getting-started">
@@ -108,7 +108,7 @@ function handleAddText() {
             <div class="benefit">✓ Works offline</div>
             <div class="benefit">✓ No account needed</div>
             <div class="benefit">✓ Local storage only</div>
-            <div class="benefit">✓ Under 100KB</div>
+            <div class="benefit">✓ Ultra-light ~54KB (157KB uncompressed)</div>
           </div>
         </div>
 
@@ -235,23 +235,14 @@ section {
   margin-bottom: 2rem;
 }
 
-section h3 {
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
+h3, h4, h5 {
   color: var(--accent);
+  margin-bottom: 0.5rem;
 }
 
-section h4 {
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
-  color: var(--accent);
-}
-
-section h5 {
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
-  color: var(--accent);
-}
+h3 { font-size: 1.3rem; margin-bottom: 1rem; }
+h4 { font-size: 1.1rem; }
+h5 { font-size: 1rem; }
 
 .fab-demo {
   display: inline-block;
@@ -276,38 +267,46 @@ section h5 {
   border-bottom: 1px dashed var(--border);
 }
 
-.feature-grid {
+.feature-grid, .example-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
   margin-top: 1rem;
 }
 
-.feature-card {
+.feature-grid {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.feature-card, .example-card, .github-card {
   border: 1px solid var(--border);
   border-radius: 0.5rem;
   padding: 1.5rem;
   background: var(--accent-background);
 }
 
-.demo-snippet {
-  margin-top: 1rem;
+.example-card {
+  padding: 1rem;
+  border-radius: 0.25rem;
 }
 
-.snippet-preview {
+.snippet-preview, .example-text {
   border: 1px dashed var(--accent);
   border-radius: 0.25rem;
   padding: 0.75rem;
   background: var(--background);
+  font-family: monospace;
+  font-size: 0.9rem;
+}
+
+.snippet-preview {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 1rem;
 }
 
 .snippet-text {
   flex: 1;
-  font-family: monospace;
-  font-size: 0.9rem;
   margin-right: 1rem;
 }
 
@@ -320,13 +319,13 @@ section h5 {
 .demo-btn {
   width: 2rem;
   height: 2rem;
-  padding: 0;
-  margin: 0;
   border: 1px solid var(--border);
   background: var(--background);
   border-radius: 0.25rem;
   cursor: default;
   font-size: 0.8rem;
+  padding: 0;
+  margin: 0;
 }
 
 .demo-btn.interactive {
@@ -352,14 +351,8 @@ section h5 {
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .template-example {
@@ -383,14 +376,13 @@ section h5 {
 .variable-form input {
   font-size: 0.8rem;
   padding: 0.25rem;
-  margin: 0;
   border: 1px solid var(--border);
   border-radius: 0.25rem;
   background: var(--accent-background);
+  margin: 0;
 }
 
-.privacy-benefits,
-.pwa-benefits {
+.privacy-benefits, .pwa-benefits, .github-benefits {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
@@ -403,26 +395,8 @@ section h5 {
   padding: 0.25rem;
 }
 
-.example-grid {
-  display: grid;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.example-card {
-  border: 1px solid var(--border);
-  border-radius: 0.25rem;
-  padding: 1rem;
-  background: var(--accent-background);
-}
-
 .example-text {
-  font-family: monospace;
-  background: var(--background);
-  padding: 0.75rem;
-  border-radius: 0.25rem;
   margin: 0.5rem 0;
-  border: 1px dashed var(--accent);
 }
 
 .variables {
@@ -447,7 +421,7 @@ section h5 {
   font-weight: 500;
 }
 
-.add-text-btn {
+.add-text-btn, .github-link {
   background: var(--accent);
   color: white;
   border: none;
@@ -460,17 +434,21 @@ section h5 {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  text-decoration: none;
   margin: 0;
-  width: auto;
 }
 
-.add-text-btn:hover {
+.github-link {
+  margin-top: 1rem;
+}
+
+.add-text-btn:hover, .github-link:hover {
   background: var(--accent-dark);
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.add-text-btn:active {
+.add-text-btn:active, .github-link:active {
   transform: translateY(0);
 }
 
@@ -483,101 +461,12 @@ code {
   color: var(--accent);
 }
 
-.privacy-list,
-.performance-list,
-.github-list {
-  list-style: none;
-  padding: 0;
-  margin: 1rem 0;
-}
-
-.privacy-list li,
-.performance-list li,
-.github-list li {
-  padding: 0.5rem 0;
-  border-bottom: 1px dashed var(--border);
-  position: relative;
-  padding-left: 1.5rem;
-}
-
-.privacy-list li::before {
-  content: '✓';
-  position: absolute;
-  left: 0;
-  color: var(--accent);
-  font-weight: bold;
-}
-
-.performance-list li::before {
-  content: '⚡';
-  position: absolute;
-  left: 0;
-}
-
-.github-list li::before {
-  content: '•';
-  position: absolute;
-  left: 0;
-  color: var(--accent);
-  font-weight: bold;
-}
-
-.github-full-width {
+.github-card {
+  text-align: center;
   margin: 2rem 0;
 }
 
-.github-card {
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  background: var(--accent-background);
-  text-align: center;
-}
-
-.github-card h3 {
-  margin-bottom: 1rem;
-  color: var(--accent);
-}
-
-.github-benefits {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
-  margin: 1rem 0;
-}
-
-@media (max-width: 768px) {
-  .github-benefits {
-    grid-template-columns: 1fr;
-  }
-}
-
-.github-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: var(--accent);
-  color: white;
-  text-decoration: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  transition: all 0.2s ease;
-  margin-top: 1rem;
-}
-
-.github-link:hover {
-  background: var(--accent-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.github-link:active {
-  transform: translateY(0);
-}
-
-.welcome-container .example-text span,
-.welcome-container .snippet-text span {
+.example-text span, .snippet-text span {
   background: var(--accent-background);
   color: var(--accent);
   font-family: monospace;
@@ -587,32 +476,11 @@ code {
 }
 
 @media (max-width: 768px) {
-  .feature-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .privacy-benefits,
-  .pwa-benefits {
-    grid-template-columns: 1fr;
-  }
-
-  .variable-form {
-    flex-direction: column;
-  }
-
-  .snippet-preview {
-    flex-direction: column;
-    gap: 0.5rem;
-    align-items: stretch;
-  }
-
-  .snippet-text {
-    margin-right: 0;
-  }
-
-  .snippet-actions {
-    flex-direction: row;
-    justify-content: center;
-  }
+  .feature-grid { grid-template-columns: 1fr; }
+  .privacy-benefits, .pwa-benefits, .github-benefits { grid-template-columns: 1fr; }
+  .variable-form { flex-direction: column; }
+  .snippet-preview { flex-direction: column; gap: 0.5rem; align-items: stretch; }
+  .snippet-text { margin-right: 0; }
+  .snippet-actions { flex-direction: row; justify-content: center; }
 }
 </style>

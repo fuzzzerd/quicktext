@@ -11,7 +11,7 @@
     cy.get('main .welcome-container').should('be.visible');
     cy.get('main').contains('Welcome to QuickText!').should('be.visible');
     cy.get('main')
-      .contains('Your privacy-first, offline text snippet manager')
+      .contains('Ultra-lightweight, privacy-first text snippet manager')
       .should('be.visible');
     cy.get('main').contains('Getting Started').should('be.visible');
     cy.get('main').contains('Add Your First Text Snippet').should('be.visible');
