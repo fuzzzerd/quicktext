@@ -1,8 +1,10 @@
-describe('Category Management', () => {
-  beforeEach(() => {
-    cy.clearLocalStorage();
-    cy.visit('/');
-  });
+['localStorage', 'indexedDB'].forEach(storageType => {
+  describe(`Category Management - ${storageType}`, () => {
+    beforeEach(() => {
+      cy.clearAllStorage();
+      cy.setStorageTypeAndWait(storageType);
+      cy.visit('/');
+    });
 
   describe('Category CRUD Operations', () => {
     it('should add a new category', () => {
@@ -396,4 +398,5 @@ describe('Category Management', () => {
       });
     });
   });
+});
 });

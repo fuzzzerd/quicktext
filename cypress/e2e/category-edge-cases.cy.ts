@@ -1,8 +1,10 @@
-describe('Category Edge Cases and Integration', () => {
-  beforeEach(() => {
-    cy.clearLocalStorage();
-    cy.visit('/');
-  });
+['localStorage', 'indexedDB'].forEach(storageType => {
+  describe(`Category Edge Cases and Integration - ${storageType}`, () => {
+    beforeEach(() => {
+      cy.clearAllStorage();
+      cy.setStorageTypeAndWait(storageType);
+      cy.visit('/');
+    });
 
   describe('Category Deletion Impact', () => {
     beforeEach(() => {
@@ -274,4 +276,5 @@ describe('Category Edge Cases and Integration', () => {
       cy.get('.item').should('have.length', 0);
     });
   });
+});
 });

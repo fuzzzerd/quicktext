@@ -1,8 +1,10 @@
-describe('QuickText Add Panel', () => {
-  beforeEach(() => {
-    cy.clearLocalStorage();
-    cy.visit('/');
-  });
+['localStorage', 'indexedDB'].forEach(storageType => {
+  describe(`QuickText Add Panel - ${storageType}`, () => {
+    beforeEach(() => {
+      cy.clearAllStorage();
+      cy.setStorageTypeAndWait(storageType);
+      cy.visit('/');
+    });
 
   it('should open the add panel when FAB is clicked', () => {
     cy.get('.fab').click(); // Changed selector
@@ -128,4 +130,5 @@ describe('QuickText Add Panel', () => {
       cy.get('.sliding-panel.visible .category-chip').contains('TestCategory').should('have.class', 'selected');
     });
   });
+});
 });

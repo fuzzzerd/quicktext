@@ -1,8 +1,10 @@
-describe('Welcome Content Panel', () => {
-  beforeEach(() => {
-    cy.clearLocalStorage();
-    cy.visit('/');
-  });
+['localStorage', 'indexedDB'].forEach(storageType => {
+  describe(`Welcome Content Panel - ${storageType}`, () => {
+    beforeEach(() => {
+      cy.clearAllStorage();
+      cy.setStorageTypeAndWait(storageType);
+      cy.visit('/');
+    });
 
   it('should show welcome content when there are no templates', () => {
     // Welcome content should be visible in main area when no templates exist
@@ -121,4 +123,5 @@ describe('Welcome Content Panel', () => {
       .contains('Welcome to QuickText!')
       .should('exist');
   });
+});
 });
