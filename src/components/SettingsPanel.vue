@@ -10,6 +10,9 @@
         <li @click="toggleCategoryManager" style="cursor: pointer">
           Manage Categories
         </li>
+        <li @click="toggleStorageSettings" style="cursor: pointer">
+          Storage Settings
+        </li>
         <li @click="toggleHelpPanel" style="cursor: pointer">Help</li>
       </ul>
     </SlidingPanel>
@@ -27,6 +30,13 @@
     >
       <CategoryManager @close="isCategoryManagerOpen = false" />
     </SlidingPanel>
+
+    <SlidingPanel
+      :is-visible="isStorageSettingsOpen"
+      @close="isStorageSettingsOpen = false"
+    >
+      <StorageSettings />
+    </SlidingPanel>
   </div>
 </template>
 
@@ -36,6 +46,7 @@ import InstallPrompt from './InstallPrompt.vue';
 import SlidingPanel from './SlidingPanel.vue';
 import WelcomeContent from './WelcomeContent.vue';
 import CategoryManager from './CategoryManager.vue';
+import StorageSettings from './StorageSettings.vue';
 
 const emit = defineEmits<{
   addText: [];
@@ -44,12 +55,14 @@ const emit = defineEmits<{
 const isSettingsPanelOpen = ref(false);
 const isHelpPanelOpen = ref(false);
 const isCategoryManagerOpen = ref(false);
+const isStorageSettingsOpen = ref(false);
 
 function toggleSettingsPanel() {
   isSettingsPanelOpen.value = !isSettingsPanelOpen.value;
   if (isSettingsPanelOpen.value) {
     isHelpPanelOpen.value = false;
     isCategoryManagerOpen.value = false;
+    isStorageSettingsOpen.value = false;
   }
 }
 
@@ -58,6 +71,7 @@ function toggleHelpPanel() {
   if (isHelpPanelOpen.value) {
     isSettingsPanelOpen.value = false;
     isCategoryManagerOpen.value = false;
+    isStorageSettingsOpen.value = false;
   }
 }
 
@@ -66,6 +80,16 @@ function toggleCategoryManager() {
   if (isCategoryManagerOpen.value) {
     isSettingsPanelOpen.value = false;
     isHelpPanelOpen.value = false;
+    isStorageSettingsOpen.value = false;
+  }
+}
+
+function toggleStorageSettings() {
+  isStorageSettingsOpen.value = !isStorageSettingsOpen.value;
+  if (isStorageSettingsOpen.value) {
+    isSettingsPanelOpen.value = false;
+    isHelpPanelOpen.value = false;
+    isCategoryManagerOpen.value = false;
   }
 }
 

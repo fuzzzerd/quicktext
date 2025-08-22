@@ -1,22 +1,87 @@
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, toRaw } from 'vue';
 import { defineStore } from 'pinia';
 import QuickText from '../models/quickText';
 import Category from '../models/category';
+import { useSettingsStore } from './settingsStore';
+import { StorageManager } from '../storage/StorageManager';
 
 export const useStringStore = defineStore('stringStore', () => {
-  const quickTexts = ref<QuickText[]>(
-    JSON.parse(localStorage.getItem('quickTexts') || '[]')
-  );
+  const settingsStore = useSettingsStore();
+  let storageManager: StorageManager;
 
-  const categories = ref<Category[]>(
-    JSON.parse(localStorage.getItem('categories') || '[]')
-  );
-
-  const activeCategoryId = ref<number | null>(
-    JSON.parse(localStorage.getItem('activeCategoryId') || 'null')
-  );
+  const quickTexts = ref<QuickText[]>([]);
+  const categories = ref<Category[]>([]);
+  const activeCategoryId = ref<number | null>(null);
+  const isInitialized = ref(false);
 
   const authorizedCategoryId = ref<number | null>(null);
+
+  // Initialize data from storage
+  async function initializeStore() {
+    if (isInitialized.value) return;
+
+    storageManager = settingsStore.getStorageManager();
+
+    try {
+      // Load data from storage
+      const [storedQuickTexts, storedCategories, storedActiveCategory] =
+        await Promise.all([
+          storageManager.get<QuickText[]>('quickTexts'),
+          storageManager.get<Category[]>('categories'),
+          storageManager.get<number | null>('activeCategoryId')
+        ]);
+
+      quickTexts.value = storedQuickTexts || [];
+      categories.value = storedCategories || [];
+      activeCategoryId.value = storedActiveCategory || null;
+
+      // Try to migrate from localStorage if storage is empty
+      if (quickTexts.value.length === 0 && categories.value.length === 0) {
+        await migrateFromLocalStorage();
+      }
+
+      isInitialized.value = true;
+    } catch (error) {
+      console.error('Error initializing store:', error);
+      // Fallback to localStorage if there's an error
+      quickTexts.value = JSON.parse(localStorage.getItem('quickTexts') || '[]');
+      categories.value = JSON.parse(localStorage.getItem('categories') || '[]');
+      activeCategoryId.value = JSON.parse(
+        localStorage.getItem('activeCategoryId') || 'null'
+      );
+      isInitialized.value = true;
+    }
+  }
+
+  // Migrate data from localStorage if needed
+  async function migrateFromLocalStorage() {
+    try {
+      const localQuickTexts = JSON.parse(
+        localStorage.getItem('quickTexts') || '[]'
+      );
+      const localCategories = JSON.parse(
+        localStorage.getItem('categories') || '[]'
+      );
+      const localActiveCategory = JSON.parse(
+        localStorage.getItem('activeCategoryId') || 'null'
+      );
+
+      if (localQuickTexts.length > 0 || localCategories.length > 0) {
+        quickTexts.value = localQuickTexts;
+        categories.value = localCategories;
+        activeCategoryId.value = localActiveCategory;
+
+        // Save to new storage (use toRaw to avoid proxy issues)
+        await Promise.all([
+          storageManager.set('quickTexts', toRaw(quickTexts.value)),
+          storageManager.set('categories', toRaw(categories.value)),
+          storageManager.set('activeCategoryId', activeCategoryId.value)
+        ]);
+      }
+    } catch (error) {
+      console.error('Error migrating from localStorage:', error);
+    }
+  }
 
   function addQuickText(
     text: string,
@@ -26,14 +91,14 @@ export const useStringStore = defineStore('stringStore', () => {
     const id = Date.now(); // Generate a unique id based on the current timestamp
     const newQuickText = new QuickText(text, sort, id, categoryIds);
     quickTexts.value.push(newQuickText);
-    saveToLocalStorage();
+    saveToStorage();
   }
 
   function removeQuickText(text: string) {
     const index = quickTexts.value.findIndex(qt => qt.text === text);
     if (index !== -1) {
       quickTexts.value.splice(index, 1);
-      saveToLocalStorage();
+      saveToStorage();
     }
   }
 
@@ -45,7 +110,7 @@ export const useStringStore = defineStore('stringStore', () => {
     const index = quickTexts.value.findIndex(qt => qt.id === id);
     if (index !== -1) {
       quickTexts.value.splice(index, 1);
-      saveToLocalStorage();
+      saveToStorage();
     }
   }
 
@@ -64,7 +129,7 @@ export const useStringStore = defineStore('stringStore', () => {
           categoryIds: existing.categoryIds,
           ...updates
         };
-        saveToLocalStorage();
+        saveToStorage();
       }
     }
   }
@@ -74,7 +139,7 @@ export const useStringStore = defineStore('stringStore', () => {
     const sortOrder = categories.value.length;
     const newCategory = new Category(id, name, sortOrder, icon, pin);
     categories.value.push(newCategory);
-    saveCategoriesLocalStorage();
+    saveCategoriesStorage();
     return newCategory;
   }
 
@@ -91,7 +156,7 @@ export const useStringStore = defineStore('stringStore', () => {
           pin: existing.pin,
           ...updates
         };
-        saveCategoriesLocalStorage();
+        saveCategoriesStorage();
       }
     }
   }
@@ -110,8 +175,8 @@ export const useStringStore = defineStore('stringStore', () => {
       if (activeCategoryId.value === id) {
         activeCategoryId.value = null;
       }
-      saveToLocalStorage();
-      saveCategoriesLocalStorage();
+      saveToStorage();
+      saveCategoriesStorage();
     }
   }
 
@@ -120,7 +185,7 @@ export const useStringStore = defineStore('stringStore', () => {
       ...cat,
       sortOrder: index
     }));
-    saveCategoriesLocalStorage();
+    saveCategoriesStorage();
   }
 
   function setActiveCategory(categoryId: number | null) {
@@ -129,7 +194,7 @@ export const useStringStore = defineStore('stringStore', () => {
       authorizedCategoryId.value = null;
     }
     activeCategoryId.value = categoryId;
-    localStorage.setItem('activeCategoryId', JSON.stringify(categoryId));
+    saveActiveCategoryStorage(categoryId);
   }
 
   function authorizeCategory(categoryId: number) {
@@ -203,15 +268,59 @@ export const useStringStore = defineStore('stringStore', () => {
     return !isCategoryAuthorized(activeCategoryId.value);
   });
 
-  function saveToLocalStorage() {
-    localStorage.setItem('quickTexts', JSON.stringify(quickTexts.value));
+  async function saveToStorage() {
+    if (!storageManager) {
+      storageManager = settingsStore.getStorageManager();
+    }
+    try {
+      // Use toRaw to get the plain array without Vue reactivity
+      const plainQuickTexts = toRaw(quickTexts.value);
+      await storageManager.set('quickTexts', plainQuickTexts);
+    } catch (error) {
+      console.error('Error saving quickTexts:', error);
+      // Fallback to localStorage
+      localStorage.setItem('quickTexts', JSON.stringify(quickTexts.value));
+    }
   }
 
-  function saveCategoriesLocalStorage() {
-    localStorage.setItem('categories', JSON.stringify(categories.value));
+  async function saveCategoriesStorage() {
+    if (!storageManager) {
+      storageManager = settingsStore.getStorageManager();
+    }
+    try {
+      // Use toRaw to get the plain array without Vue reactivity
+      const plainCategories = toRaw(categories.value);
+      await storageManager.set('categories', plainCategories);
+    } catch (error) {
+      console.error('Error saving categories:', error);
+      // Fallback to localStorage
+      localStorage.setItem('categories', JSON.stringify(categories.value));
+    }
   }
+
+  async function saveActiveCategoryStorage(categoryId: number | null) {
+    if (!storageManager) {
+      storageManager = settingsStore.getStorageManager();
+    }
+    try {
+      await storageManager.set('activeCategoryId', categoryId);
+    } catch (error) {
+      console.error('Error saving activeCategoryId:', error);
+      // Fallback to localStorage
+      localStorage.setItem('activeCategoryId', JSON.stringify(categoryId));
+    }
+  }
+
+  // Initialize store when it's first used
+  onMounted(async () => {
+    await initializeStore();
+  });
+
+  // Also initialize immediately in case the store is used before mount
+  initializeStore();
 
   return {
+    isInitialized,
     quickTexts,
     categories,
     activeCategoryId,
