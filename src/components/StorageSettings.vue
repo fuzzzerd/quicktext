@@ -54,8 +54,22 @@
       Error: {{ storageChangeError }}
     </div>
 
-    <div class="storage-actions" v-if="showClearButton">
+    <div class="storage-actions">
+      <button @click="exportData" class="action-btn export-btn">
+        Export Backup
+      </button>
+      <button @click="triggerImport" class="action-btn import-btn">
+        Import Backup
+      </button>
+      <input
+        ref="fileInput"
+        type="file"
+        accept=".json"
+        @change="handleFileImport"
+        style="display: none"
+      />
       <button
+        v-if="showClearButton"
         @click="clearAllData"
         :disabled="isChangingStorage"
         class="clear-btn"
@@ -87,6 +101,7 @@ import { useSettingsStore } from '../stores/settingsStore';
 import { StorageType } from '../storage/types';
 
 const settingsStore = useSettingsStore();
+const fileInput = ref<HTMLInputElement>();
 
 const selectedStorageType = ref(settingsStore.storageType);
 interface StorageInfo {
@@ -137,7 +152,67 @@ async function clearAllData() {
   if (confirmed) {
     const storageManager = settingsStore.getStorageManager();
     await storageManager.clear();
+    // Give a small delay to ensure data is cleared
+    await new Promise(resolve => setTimeout(resolve, 100));
     window.location.reload();
+  }
+}
+
+async function exportData() {
+  try {
+    const storageManager = settingsStore.getStorageManager();
+    const jsonData = await storageManager.exportData();
+    
+    const blob = new Blob([jsonData], {
+      type: 'application/json'
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `quicktext-backup-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    alert('Failed to export data: ' + (error instanceof Error ? error.message : 'Unknown error'));
+  }
+}
+
+function triggerImport() {
+  fileInput.value?.click();
+}
+
+async function handleFileImport(event: Event) {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+  
+  if (!file) return;
+  
+  try {
+    const text = await file.text();
+    
+    // Ask user whether to clear existing data or append
+    const shouldReplace = confirm(
+      'Do you want to replace all existing data with the backup?\n\n' +
+      'Click OK to replace all data, or Cancel to append to existing data.'
+    );
+    
+    const storageManager = settingsStore.getStorageManager();
+    await storageManager.importData(text, shouldReplace ? 'replace' : 'append');
+    
+    // Give a small delay to ensure data is persisted
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    alert('Data imported successfully!');
+    window.location.reload();
+  } catch (error) {
+    alert('Failed to import data: ' + (error instanceof Error ? error.message : 'Invalid file'));
+  } finally {
+    // Reset file input
+    if (target) {
+      target.value = '';
+    }
   }
 }
 
@@ -295,15 +370,27 @@ onMounted(async () => {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
+  flex-wrap: wrap;
 }
 
 .storage-actions button {
   padding: 0.5rem 1rem;
-  border: none;
+  border: 1px solid var(--border);
   border-radius: 4px;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: all 0.2s;
+  width: auto;
+  margin-bottom: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+}
+
+.storage-actions button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .storage-actions button:disabled {
@@ -311,9 +398,28 @@ onMounted(async () => {
   cursor: not-allowed;
 }
 
-.clear-btn {
-  background: #f44336;
+.action-btn {
+  background-color: var(--accent);
+  color: var(--accent-background);
+  border-color: var(--accent);
+}
+
+.export-btn {
+  background-color: #4caf50;
   color: white;
+  border-color: #4caf50;
+}
+
+.import-btn {
+  background-color: #2196f3;
+  color: white;
+  border-color: #2196f3;
+}
+
+.clear-btn {
+  background-color: #f44336;
+  color: white;
+  border-color: #f44336;
 }
 
 .storage-notes {
