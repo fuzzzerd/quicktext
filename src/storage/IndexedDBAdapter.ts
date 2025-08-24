@@ -3,11 +3,15 @@ import type { StorageAdapter } from './types';
 export class IndexedDBAdapter implements StorageAdapter {
   private dbName = 'quicktext-storage';
   private storeName = 'data';
-  private version = 1;
+  private version = 2; // Increment version to force upgrade
   private db: IDBDatabase | null = null;
 
   private async openDB(): Promise<IDBDatabase> {
-    if (this.db) return this.db;
+    // Always close existing connection before opening new one
+    if (this.db) {
+      this.db.close();
+      this.db = null;
+    }
 
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.dbName, this.version);
@@ -16,7 +20,20 @@ export class IndexedDBAdapter implements StorageAdapter {
 
       request.onsuccess = () => {
         this.db = request.result;
-        resolve(this.db);
+        // Check if object store exists, if not we need to recreate the database
+        if (!this.db.objectStoreNames.contains(this.storeName)) {
+          this.db.close();
+          this.db = null;
+          // Delete and recreate the database
+          const deleteReq = indexedDB.deleteDatabase(this.dbName);
+          deleteReq.onsuccess = () => {
+            // Retry opening the database
+            this.openDB().then(resolve).catch(reject);
+          };
+          deleteReq.onerror = () => reject(deleteReq.error);
+        } else {
+          resolve(this.db);
+        }
       };
 
       request.onupgradeneeded = event => {
@@ -78,7 +95,14 @@ export class IndexedDBAdapter implements StorageAdapter {
       const store = transaction.objectStore(this.storeName);
       const request = store.clear();
 
-      request.onsuccess = () => resolve();
+      request.onsuccess = () => {
+        // Close the database connection after clearing to ensure fresh state
+        if (this.db) {
+          this.db.close();
+          this.db = null;
+        }
+        resolve();
+      };
       request.onerror = () => reject(request.error);
     });
   }
