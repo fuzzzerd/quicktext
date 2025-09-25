@@ -31,6 +31,7 @@
     "eslint": "^9.34.0",
     "eslint-plugin-vue": "~10.4.0",
     "jiti": "^2.5.1",
+    "mochawesome": "^7.1.4",
     "npm-run-all2": "^8.0.4",
     "prettier": "^3.6.2",
     "start-server-and-test": "^2.0.13",
