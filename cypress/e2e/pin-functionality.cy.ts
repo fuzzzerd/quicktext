@@ -69,11 +69,10 @@
     // Switch to the pin-protected category
     cy.get('.bottom-bar button').contains('🔒').click();
 
-    // Enter correct PIN
+    // Enter correct PIN - should auto-submit and close panel
     cy.get('.sliding-panel.visible .pin-input').type('1234');
-    cy.get('.sliding-panel.visible button').contains('Access Category').click();
 
-    // PIN panel should close
+    // PIN panel should close automatically after entering correct PIN
     cy.get('.sliding-panel.visible .pin-form').should('not.exist');
 
     // Should now see the protected template
@@ -122,9 +121,8 @@
     cy.get('.bottom-bar button').contains('🔒').click();
     cy.get('.sliding-panel.visible .pin-form').should('be.visible');
 
-    // Enter correct PIN
+    // Enter correct PIN - should auto-submit and close panel
     cy.get('.sliding-panel.visible .pin-input').type('1234');
-    cy.get('.sliding-panel.visible button').contains('Access Category').click();
 
     // Should see protected template
     cy.get('.item .details').should(
@@ -179,9 +177,8 @@
     cy.get('.sliding-panel.visible .pin-form').should('be.visible');
     cy.get('.sliding-panel.visible h3').should('contain.text', 'Enter PIN');
 
-    // Enter correct PIN this time
+    // Enter correct PIN this time - should auto-submit and close panel
     cy.get('.sliding-panel.visible .pin-input').type('1234');
-    cy.get('.sliding-panel.visible button').contains('Access Category').click();
 
     // Should now see the protected template
     cy.get('.item .details').should(
@@ -210,7 +207,6 @@
     // First authorize the protected category
     cy.get('.bottom-bar button').contains('🔒').click();
     cy.get('.sliding-panel.visible .pin-input').type('1234');
-    cy.get('.sliding-panel.visible button').contains('Access Category').click();
     cy.get('.item .details').should(
       'contain.text',
       'Protected template content'

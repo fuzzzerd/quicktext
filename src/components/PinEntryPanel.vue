@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SlidingPanel from './SlidingPanel.vue';
-import { ref, watch } from 'vue';
+import { ref, watch, nextTick } from 'vue';
 import { useStringStore } from '../stores/stringStore';
 
 interface Props {
@@ -18,6 +18,7 @@ const emit = defineEmits<{
 const stringStore = useStringStore();
 const enteredPin = ref('');
 const errorMessage = ref('');
+const pinInputRef = ref<HTMLInputElement | null>(null);
 
 watch(
   () => props.isVisible,
@@ -25,6 +26,24 @@ watch(
     if (newVisible) {
       enteredPin.value = '';
       errorMessage.value = '';
+      nextTick(() => {
+        pinInputRef.value?.focus();
+      });
+    }
+  }
+);
+
+// Watch for pin changes and auto-submit when valid
+watch(
+  enteredPin,
+  newPin => {
+    if (newPin.length > 0) {
+      errorMessage.value = '';
+
+      // Auto-submit if the pin is valid
+      if (stringStore.validateCategoryPin(props.categoryId, newPin)) {
+        emit('success');
+      }
     }
   }
 );
@@ -66,6 +85,7 @@ function handleKeyup(event: KeyboardEvent) {
 
       <div class="pin-input-container">
         <input
+          ref="pinInputRef"
           v-model="enteredPin"
           type="text"
           inputmode="numeric"
