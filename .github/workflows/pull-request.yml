@@ -30,7 +30,7 @@ jobs:
         continue-on-error: true
 
       - name: Process Cypress Test Results
-        uses: im-open/process-cypress-test-results@v2.2.4
+        uses: im-open/process-cypress-test-results@v3
         if: always()
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
