@@ -12,5 +12,12 @@ module.exports = defineConfig({
     baseUrl: 'https://localhost:5059'
   },
   chromeWebSecurity: false,
-  video: false
+  video: false,
+  reporter: 'mochawesome',
+  reporterOptions: {
+    reportDir: 'cypress/results',
+    overwrite: false,
+    html: false,
+    json: true
+  }
 });

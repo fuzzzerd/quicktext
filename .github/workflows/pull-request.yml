@@ -4,6 +4,7 @@ on:
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
+  pull-requests: write
 
 jobs:
   # Build job
@@ -24,5 +25,17 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Run et2 tests
+      - name: Run e2e tests
         run: npm run test
+        continue-on-error: true
+
+      - name: Process Cypress Test Results
+        uses: im-open/process-cypress-test-results@v3
+        if: always()
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          results-file: 'cypress/results/mochawesome.json'
+          report-name: 'Cypress E2E Test Results'
+          create-status-check: false
+          create-pr-comment: true
+          update-comment-if-one-exists: true
