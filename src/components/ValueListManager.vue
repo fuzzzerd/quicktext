@@ -91,8 +91,9 @@
       >
         <p>No template variables detected.</p>
         <p class="hint">
-          Add templates with variables using {{ name }} syntax, and they will
-          appear here so you can define predefined options for each.
+          Add templates with variables using &#123;&#123; name &#125;&#125;
+          syntax, and they will appear here so you can define predefined options
+          for each.
         </p>
       </div>
     </div>
