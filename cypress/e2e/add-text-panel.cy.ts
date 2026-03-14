@@ -60,7 +60,7 @@
       cy.get('.add-category-row .live-edit-name').type('TestCategory');
       cy.get('.add-category-row .live-edit-icon').type('🧪');
       cy.get('.add-category-row .add-button').click();
-      cy.get('.close-btn').click();
+      cy.get('.sliding-panel.visible .close-btn').click();
     });
 
     it('should show category selector when categories exist', () => {
@@ -76,7 +76,7 @@
       cy.get('.sliding-panel.visible ul li').contains('Manage Categories').click();
       cy.get('.category-item .delete-btn').click();
       cy.on('window:confirm', () => true);
-      cy.get('.close-btn').click();
+      cy.get('.sliding-panel.visible .close-btn').click();
 
       // Now test add panel
       cy.get('.fab').click();

@@ -10,6 +10,9 @@
         <li @click="toggleCategoryManager" style="cursor: pointer">
           Manage Categories
         </li>
+        <li @click="toggleValueListManager" style="cursor: pointer">
+          Manage Value Lists
+        </li>
         <li @click="toggleStorageSettings" style="cursor: pointer">
           Storage Settings
         </li>
@@ -32,6 +35,13 @@
     </SlidingPanel>
 
     <SlidingPanel
+      :is-visible="isValueListManagerOpen"
+      @close="isValueListManagerOpen = false"
+    >
+      <ValueListManager @close="isValueListManagerOpen = false" />
+    </SlidingPanel>
+
+    <SlidingPanel
       :is-visible="isStorageSettingsOpen"
       @close="isStorageSettingsOpen = false"
     >
@@ -46,6 +56,7 @@ import InstallPrompt from './InstallPrompt.vue';
 import SlidingPanel from './SlidingPanel.vue';
 import WelcomeContent from './WelcomeContent.vue';
 import CategoryManager from './CategoryManager.vue';
+import ValueListManager from './ValueListManager.vue';
 import StorageSettings from './StorageSettings.vue';
 
 const emit = defineEmits<{
@@ -55,6 +66,7 @@ const emit = defineEmits<{
 const isSettingsPanelOpen = ref(false);
 const isHelpPanelOpen = ref(false);
 const isCategoryManagerOpen = ref(false);
+const isValueListManagerOpen = ref(false);
 const isStorageSettingsOpen = ref(false);
 
 function toggleSettingsPanel() {
@@ -62,6 +74,7 @@ function toggleSettingsPanel() {
   if (isSettingsPanelOpen.value) {
     isHelpPanelOpen.value = false;
     isCategoryManagerOpen.value = false;
+    isValueListManagerOpen.value = false;
     isStorageSettingsOpen.value = false;
   }
 }
@@ -71,6 +84,7 @@ function toggleHelpPanel() {
   if (isHelpPanelOpen.value) {
     isSettingsPanelOpen.value = false;
     isCategoryManagerOpen.value = false;
+    isValueListManagerOpen.value = false;
     isStorageSettingsOpen.value = false;
   }
 }
@@ -80,6 +94,17 @@ function toggleCategoryManager() {
   if (isCategoryManagerOpen.value) {
     isSettingsPanelOpen.value = false;
     isHelpPanelOpen.value = false;
+    isValueListManagerOpen.value = false;
+    isStorageSettingsOpen.value = false;
+  }
+}
+
+function toggleValueListManager() {
+  isValueListManagerOpen.value = !isValueListManagerOpen.value;
+  if (isValueListManagerOpen.value) {
+    isSettingsPanelOpen.value = false;
+    isHelpPanelOpen.value = false;
+    isCategoryManagerOpen.value = false;
     isStorageSettingsOpen.value = false;
   }
 }
@@ -90,6 +115,7 @@ function toggleStorageSettings() {
     isSettingsPanelOpen.value = false;
     isHelpPanelOpen.value = false;
     isCategoryManagerOpen.value = false;
+    isValueListManagerOpen.value = false;
   }
 }
 

@@ -2,6 +2,7 @@ import { ref, computed, onMounted, toRaw } from 'vue';
 import { defineStore } from 'pinia';
 import QuickText from '../models/quickText';
 import Category from '../models/category';
+import ValueList from '../models/valueList';
 import { useSettingsStore } from './settingsStore';
 import { StorageManager } from '../storage/StorageManager';
 
@@ -11,6 +12,7 @@ export const useStringStore = defineStore('stringStore', () => {
 
   const quickTexts = ref<QuickText[]>([]);
   const categories = ref<Category[]>([]);
+  const valueLists = ref<ValueList[]>([]);
   const activeCategoryId = ref<number | null>(null);
   const isInitialized = ref(false);
 
@@ -24,16 +26,22 @@ export const useStringStore = defineStore('stringStore', () => {
 
     try {
       // Load data from storage
-      const [storedQuickTexts, storedCategories, storedActiveCategory] =
-        await Promise.all([
-          storageManager.get<QuickText[]>('quickTexts'),
-          storageManager.get<Category[]>('categories'),
-          storageManager.get<number | null>('activeCategoryId')
-        ]);
+      const [
+        storedQuickTexts,
+        storedCategories,
+        storedActiveCategory,
+        storedValueLists
+      ] = await Promise.all([
+        storageManager.get<QuickText[]>('quickTexts'),
+        storageManager.get<Category[]>('categories'),
+        storageManager.get<number | null>('activeCategoryId'),
+        storageManager.get<ValueList[]>('valueLists')
+      ]);
 
       quickTexts.value = storedQuickTexts || [];
       categories.value = storedCategories || [];
       activeCategoryId.value = storedActiveCategory || null;
+      valueLists.value = storedValueLists || [];
 
       // Try to migrate from localStorage if storage is empty
       if (quickTexts.value.length === 0 && categories.value.length === 0) {
@@ -46,6 +54,7 @@ export const useStringStore = defineStore('stringStore', () => {
       // Fallback to localStorage if there's an error
       quickTexts.value = JSON.parse(localStorage.getItem('quickTexts') || '[]');
       categories.value = JSON.parse(localStorage.getItem('categories') || '[]');
+      valueLists.value = JSON.parse(localStorage.getItem('valueLists') || '[]');
       activeCategoryId.value = JSON.parse(
         localStorage.getItem('activeCategoryId') || 'null'
       );
@@ -65,17 +74,22 @@ export const useStringStore = defineStore('stringStore', () => {
       const localActiveCategory = JSON.parse(
         localStorage.getItem('activeCategoryId') || 'null'
       );
+      const localValueLists = JSON.parse(
+        localStorage.getItem('valueLists') || '[]'
+      );
 
       if (localQuickTexts.length > 0 || localCategories.length > 0) {
         quickTexts.value = localQuickTexts;
         categories.value = localCategories;
         activeCategoryId.value = localActiveCategory;
+        valueLists.value = localValueLists;
 
         // Save to new storage (use toRaw to avoid proxy issues)
         await Promise.all([
           storageManager.set('quickTexts', toRaw(quickTexts.value)),
           storageManager.set('categories', toRaw(categories.value)),
-          storageManager.set('activeCategoryId', activeCategoryId.value)
+          storageManager.set('activeCategoryId', activeCategoryId.value),
+          storageManager.set('valueLists', toRaw(valueLists.value))
         ]);
       }
     } catch (error) {
@@ -194,6 +208,63 @@ export const useStringStore = defineStore('stringStore', () => {
     saveCategoriesStorage();
   }
 
+  // Value List CRUD
+  function addValueList(name: string, values: string[] = []): ValueList {
+    const id = Date.now();
+    const sortOrder = valueLists.value.length;
+    const newValueList = new ValueList(id, name, sortOrder, values);
+    valueLists.value.push(newValueList);
+    saveValueListsStorage();
+    return newValueList;
+  }
+
+  function updateValueList(
+    id: number,
+    updates: Partial<Omit<ValueList, 'id'>>
+  ) {
+    const index = valueLists.value.findIndex(vl => vl.id === id);
+    if (index !== -1) {
+      const existing = valueLists.value[index];
+      if (existing) {
+        valueLists.value[index] = {
+          id: existing.id,
+          name: existing.name,
+          sortOrder: existing.sortOrder,
+          values: existing.values,
+          ...updates
+        };
+        saveValueListsStorage();
+      }
+    }
+  }
+
+  function removeValueList(id: number) {
+    const index = valueLists.value.findIndex(vl => vl.id === id);
+    if (index !== -1) {
+      valueLists.value.splice(index, 1);
+      saveValueListsStorage();
+    }
+  }
+
+  function reorderValueLists(newOrder: ValueList[]) {
+    valueLists.value = newOrder.map((vl, index) => ({
+      ...vl,
+      sortOrder: index
+    }));
+    saveValueListsStorage();
+  }
+
+  function getValueListByName(name: string): ValueList | undefined {
+    const lowerName = name.toLowerCase();
+    return sortedValueLists.value.find(
+      vl => vl.name.toLowerCase() === lowerName
+    );
+  }
+
+  function getValueListById(id: number): ValueList | undefined {
+    return valueLists.value.find(vl => vl.id === id);
+  }
+
   function reorderQuickTexts(newOrder: QuickText[]) {
     newOrder.forEach((qt, index) => {
       qt.sort = index;
@@ -267,6 +338,27 @@ export const useStringStore = defineStore('stringStore', () => {
     return [...categories.value].sort((a, b) => a.sortOrder - b.sortOrder);
   });
 
+  const sortedValueLists = computed(() => {
+    return [...valueLists.value].sort((a, b) => a.sortOrder - b.sortOrder);
+  });
+
+  const allTemplateVariables = computed(() => {
+    const seen = new Set<string>();
+    const variables: string[] = [];
+    for (const qt of quickTexts.value) {
+      const matches = qt.text.match(/{{\s*([^}]+)\s*}}/g) || [];
+      for (const match of matches) {
+        const name = match.replace(/[{}]/g, '').trim();
+        const lower = name.toLowerCase();
+        if (!seen.has(lower)) {
+          seen.add(lower);
+          variables.push(name);
+        }
+      }
+    }
+    return variables;
+  });
+
   const hasUncategorizedItems = computed(() => {
     return quickTexts.value.some(
       qt => !qt.categoryIds || qt.categoryIds.length === 0
@@ -315,6 +407,19 @@ export const useStringStore = defineStore('stringStore', () => {
     }
   }
 
+  async function saveValueListsStorage() {
+    if (!storageManager) {
+      storageManager = settingsStore.getStorageManager();
+    }
+    try {
+      const plainValueLists = toRaw(valueLists.value);
+      await storageManager.set('valueLists', plainValueLists);
+    } catch (error) {
+      console.error('Error saving valueLists:', error);
+      localStorage.setItem('valueLists', JSON.stringify(valueLists.value));
+    }
+  }
+
   async function saveActiveCategoryStorage(categoryId: number | null) {
     if (!storageManager) {
       storageManager = settingsStore.getStorageManager();
@@ -340,9 +445,12 @@ export const useStringStore = defineStore('stringStore', () => {
     isInitialized,
     quickTexts,
     categories,
+    valueLists,
     activeCategoryId,
     filteredQuickTexts,
     sortedCategories,
+    sortedValueLists,
+    allTemplateVariables,
     hasUncategorizedItems,
     shouldShowCategoryTabs,
     isActiveCategoryLocked,
@@ -356,6 +464,12 @@ export const useStringStore = defineStore('stringStore', () => {
     updateCategory,
     removeCategory,
     reorderCategories,
+    addValueList,
+    updateValueList,
+    removeValueList,
+    reorderValueLists,
+    getValueListByName,
+    getValueListById,
     setActiveCategory,
     authorizeCategory,
     isCategoryAuthorized,

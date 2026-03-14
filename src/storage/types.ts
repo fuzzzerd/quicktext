@@ -15,6 +15,7 @@ export interface StorageData {
   quickTexts: unknown[];
   categories: unknown[];
   activeCategoryId: number | null;
+  valueLists: unknown[];
 }
 
 export interface StorageSettings {

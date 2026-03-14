@@ -162,7 +162,7 @@ async function exportData() {
   try {
     const storageManager = settingsStore.getStorageManager();
     const jsonData = await storageManager.exportData();
-    
+
     const blob = new Blob([jsonData], {
       type: 'application/json'
     });
@@ -175,7 +175,10 @@ async function exportData() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   } catch (error) {
-    alert('Failed to export data: ' + (error instanceof Error ? error.message : 'Unknown error'));
+    alert(
+      'Failed to export data: ' +
+        (error instanceof Error ? error.message : 'Unknown error')
+    );
   }
 }
 
@@ -186,28 +189,31 @@ function triggerImport() {
 async function handleFileImport(event: Event) {
   const target = event.target as HTMLInputElement;
   const file = target.files?.[0];
-  
+
   if (!file) return;
-  
+
   try {
     const text = await file.text();
-    
+
     // Ask user whether to clear existing data or append
     const shouldReplace = confirm(
       'Do you want to replace all existing data with the backup?\n\n' +
-      'Click OK to replace all data, or Cancel to append to existing data.'
+        'Click OK to replace all data, or Cancel to append to existing data.'
     );
-    
+
     const storageManager = settingsStore.getStorageManager();
     await storageManager.importData(text, shouldReplace ? 'replace' : 'append');
-    
+
     // Give a small delay to ensure data is persisted
     await new Promise(resolve => setTimeout(resolve, 100));
-    
+
     alert('Data imported successfully!');
     window.location.reload();
   } catch (error) {
-    alert('Failed to import data: ' + (error instanceof Error ? error.message : 'Invalid file'));
+    alert(
+      'Failed to import data: ' +
+        (error instanceof Error ? error.message : 'Invalid file')
+    );
   } finally {
     // Reset file input
     if (target) {

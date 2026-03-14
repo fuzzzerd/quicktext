@@ -14,7 +14,7 @@
       cy.get('.add-category-row .live-edit-name').type('ToDelete');
       cy.get('.add-category-row .live-edit-icon').type('🗑️');
       cy.get('.add-category-row .add-button').click();
-      cy.get('.close-btn').click();
+      cy.get('.sliding-panel.visible .close-btn').click();
 
       // Add a template to this category
       cy.get('.fab').click();
@@ -34,7 +34,7 @@
       cy.get('.sliding-panel.visible ul li').contains('Manage Categories').click();
       cy.get('.category-item .delete-btn').click();
       cy.on('window:confirm', () => true);
-      cy.get('.close-btn').click();
+      cy.get('.sliding-panel.visible .close-btn').click();
 
       // Template should still exist but be uncategorized
       cy.get('.item .details').should('contain.text', 'Template in category to be deleted');
@@ -50,7 +50,7 @@
       cy.get('.add-category-row .live-edit-name').type('KeepThis');
       cy.get('.add-category-row .live-edit-icon').type('✅');
       cy.get('.add-category-row .add-button').click();
-      cy.get('.close-btn').click();
+      cy.get('.sliding-panel.visible .close-btn').click();
 
       // Add a template to both categories
       cy.get('.fab').click();
@@ -72,7 +72,7 @@
       cy.get('.sliding-panel.visible ul li').contains('Manage Categories').click();
       cy.get('.category-item .live-edit-name[value="ToDelete"]').closest('.category-item').find('.delete-btn').click();
       cy.on('window:confirm', () => true);
-      cy.get('.close-btn').click();
+      cy.get('.sliding-panel.visible .close-btn').click();
 
       // Template should still appear in KeepThis category
       cy.get('.bottom-bar button').contains('✅').click({ force: true });
@@ -140,7 +140,7 @@
       cy.get('.add-category-row .live-edit-name').type('Persistent');
       cy.get('.add-category-row .live-edit-icon').type('💾');
       cy.get('.add-category-row .add-button').click();
-      cy.get('.close-btn').click();
+      cy.get('.sliding-panel.visible .close-btn').click();
 
       // Reload page
       cy.reload();
@@ -165,7 +165,7 @@
       // Category should be added and visible in manager
       cy.get('.category-item .live-edit-name').should('have.value', longName);
       
-      cy.get('.close-btn').click();
+      cy.get('.sliding-panel.visible .close-btn').click();
 
       // Should appear in bottom bar (might be truncated but should be functional)
       cy.get('.bottom-bar button').should('exist');
@@ -182,7 +182,7 @@
         cy.get('.add-category-row .add-button').click();
       }
       
-      cy.get('.close-btn').click();
+      cy.get('.sliding-panel.visible .close-btn').click();
 
       // All categories should appear in bottom bar
       cy.get('.bottom-bar button').should('have.length', 10);
@@ -197,7 +197,7 @@
       cy.get('.sliding-panel.visible ul li').contains('Manage Categories').click();
       cy.get('.add-category-row .live-edit-name').type('Empty');
       cy.get('.add-category-row .add-button').click();
-      cy.get('.close-btn').click();
+      cy.get('.sliding-panel.visible .close-btn').click();
 
       // Should show welcome content in main area
       cy.get('main .welcome-container').should('be.visible');
@@ -221,7 +221,7 @@
       cy.get('.add-category-row .live-edit-icon').type('🏠');
       cy.get('.add-category-row .add-button').click();
       
-      cy.get('.close-btn').click();
+      cy.get('.sliding-panel.visible .close-btn').click();
 
       // Add a template
       cy.get('.fab').click();

@@ -34,19 +34,16 @@ watch(
 );
 
 // Watch for pin changes and auto-submit when valid
-watch(
-  enteredPin,
-  newPin => {
-    if (newPin.length > 0) {
-      errorMessage.value = '';
+watch(enteredPin, newPin => {
+  if (newPin.length > 0) {
+    errorMessage.value = '';
 
-      // Auto-submit if the pin is valid
-      if (stringStore.validateCategoryPin(props.categoryId, newPin)) {
-        emit('success');
-      }
+    // Auto-submit if the pin is valid
+    if (stringStore.validateCategoryPin(props.categoryId, newPin)) {
+      emit('success');
     }
   }
-);
+});
 
 function handleSubmit() {
   if (enteredPin.value.length === 0) {

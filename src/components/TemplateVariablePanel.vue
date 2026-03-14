@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import SlidingPanel from './SlidingPanel.vue';
+import ComboboxInput from './ComboboxInput.vue';
 import { ref, watch } from 'vue';
+import { useStringStore } from '../stores/stringStore';
+import type ValueList from '../models/valueList';
 
 interface Props {
   isVisible: boolean;
@@ -15,7 +18,12 @@ const emit = defineEmits<{
   execute: [variableValues: Record<string, string>];
 }>();
 
+const stringStore = useStringStore();
 const variableValues = ref<Record<string, string>>({});
+
+function getValueList(variableName: string): ValueList | undefined {
+  return stringStore.getValueListByName(variableName);
+}
 
 // Reset values when panel becomes visible
 watch(
@@ -51,7 +59,15 @@ function handleClose() {
           class="variable-input"
         >
           <label :for="variable">{{ variable }}</label>
+          <ComboboxInput
+            v-if="getValueList(variable)"
+            :model-value="variableValues[variable] ?? ''"
+            @update:model-value="variableValues[variable] = $event"
+            :options="getValueList(variable)!.values"
+            :placeholder="`Enter ${variable}...`"
+          />
           <input
+            v-else
             :id="variable"
             type="text"
             v-model="variableValues[variable]"

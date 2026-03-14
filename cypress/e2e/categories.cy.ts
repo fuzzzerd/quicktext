@@ -33,7 +33,7 @@
       cy.get('.category-item .live-edit-name').clear().type('Business');
 
       // Close and reopen to verify persistence
-      cy.get('.close-btn').click();
+      cy.get('.sliding-panel.visible .close-btn').click();
       cy.get('.icons button').contains('...').click();
       cy.get('.sliding-panel.visible ul li').contains('Manage Categories').click();
 
@@ -53,7 +53,7 @@
       cy.get('.category-item .live-edit-icon').clear().type('🏢');
 
       // Close and reopen to verify persistence
-      cy.get('.close-btn').click();
+      cy.get('.sliding-panel.visible .close-btn').click();
       cy.get('.icons button').contains('...').click();
       cy.get('.sliding-panel.visible ul li').contains('Manage Categories').click();
 
@@ -121,7 +121,7 @@
       cy.get('.add-category-row .add-button').click();
       
       // Close category manager
-      cy.get('.close-btn').click();
+      cy.get('.sliding-panel.visible .close-btn').click();
     });
 
     it('should add a template to a specific category', () => {
@@ -190,7 +190,7 @@
         cy.on('window:confirm', () => true);
       });
       
-      cy.get('.close-btn').click();
+      cy.get('.sliding-panel.visible .close-btn').click();
 
       // Add a template (should work without categories)
       cy.get('.fab').click();
@@ -220,7 +220,7 @@
       cy.get('.add-category-row .live-edit-icon').type('🏠');
       cy.get('.add-category-row .add-button').click();
       
-      cy.get('.close-btn').click();
+      cy.get('.sliding-panel.visible .close-btn').click();
 
       // Add templates to different categories
       // Work template
