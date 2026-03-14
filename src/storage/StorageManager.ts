@@ -64,7 +64,8 @@ export class StorageManager {
     return {
       quickTexts: (allData.quickTexts as unknown[]) || [],
       categories: (allData.categories as unknown[]) || [],
-      activeCategoryId: (allData.activeCategoryId as number | null) || null
+      activeCategoryId: (allData.activeCategoryId as number | null) || null,
+      valueLists: (allData.valueLists as unknown[]) || []
     };
   }
 
@@ -107,45 +108,50 @@ export class StorageManager {
 
   async exportData(): Promise<string> {
     const data = await this.getAllData();
-    
+
     const exportData = {
       version: '1.0',
       exportDate: new Date().toISOString(),
       storageType: this.currentType,
       data: data
     };
-    
+
     return JSON.stringify(exportData, null, 2);
   }
 
-  async importData(jsonData: string, mode: 'replace' | 'append' = 'replace'): Promise<void> {
+  async importData(
+    jsonData: string,
+    mode: 'replace' | 'append' = 'replace'
+  ): Promise<void> {
     const importData = JSON.parse(jsonData);
-    
+
     // Validate the import data structure
     if (!importData.data || typeof importData.data !== 'object') {
       throw new Error('Invalid backup file format');
     }
-    
+
     const { quickTexts, categories, activeCategoryId } = importData.data;
-    
+    const valueLists = importData.data.valueLists || [];
+
     if (!Array.isArray(quickTexts) || !Array.isArray(categories)) {
       throw new Error('Invalid backup file format: missing required data');
     }
-    
+
     if (mode === 'replace') {
       // Clear existing data first
       await this.clear();
-      
+
       // Import the data
       await this.set('quickTexts', quickTexts);
       await this.set('categories', categories);
+      await this.set('valueLists', valueLists);
       if (activeCategoryId !== undefined) {
         await this.set('activeCategoryId', activeCategoryId);
       }
     } else {
       // Append mode - merge with existing data
       const existingData = await this.getAllData();
-      
+
       // Merge quickTexts - add timestamp to IDs to avoid conflicts
       const timestamp = Date.now();
       const mergedQuickTexts = [
@@ -158,34 +164,64 @@ export class StorageManager {
           };
         })
       ];
-      
+
       // Merge categories - add timestamp to IDs to avoid conflicts
       const mergedCategories = [
         ...(existingData.categories || []),
         ...categories.map((cat: unknown) => {
-          const category = cat as { id: number; sortOrder: number; [key: string]: unknown };
+          const category = cat as {
+            id: number;
+            sortOrder: number;
+            [key: string]: unknown;
+          };
           return {
             ...category,
             id: category.id + timestamp, // Ensure unique IDs
-            sortOrder: (existingData.categories?.length || 0) + category.sortOrder
+            sortOrder:
+              (existingData.categories?.length || 0) + category.sortOrder
           };
         })
       ];
-      
+
+      // Merge value lists - add timestamp to IDs to avoid conflicts
+      const mergedValueLists = [
+        ...(existingData.valueLists || []),
+        ...valueLists.map((vl: unknown) => {
+          const valueList = vl as {
+            id: number;
+            sortOrder: number;
+            [key: string]: unknown;
+          };
+          return {
+            ...valueList,
+            id: valueList.id + timestamp,
+            sortOrder:
+              (existingData.valueLists?.length || 0) + valueList.sortOrder
+          };
+        })
+      ];
+
       // Update quickTexts with new category IDs if they have categories
       const updatedQuickTexts = mergedQuickTexts.map((qt: unknown) => {
-        const quickText = qt as { id: number; categoryIds?: number[]; [key: string]: unknown };
+        const quickText = qt as {
+          id: number;
+          categoryIds?: number[];
+          [key: string]: unknown;
+        };
         if (quickText.categoryIds && quickText.id >= timestamp) {
           return {
             ...quickText,
-            categoryIds: quickText.categoryIds.map((id: number) => id + timestamp)
+            categoryIds: quickText.categoryIds.map(
+              (id: number) => id + timestamp
+            )
           };
         }
         return quickText;
       });
-      
+
       await this.set('quickTexts', updatedQuickTexts);
       await this.set('categories', mergedCategories);
+      await this.set('valueLists', mergedValueLists);
     }
   }
 }

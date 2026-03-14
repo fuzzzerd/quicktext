@@ -23,7 +23,7 @@
     cy.get('.add-category-row .add-button').click();
 
     // Close category manager
-    cy.get('.close-btn').click();
+    cy.get('.sliding-panel.visible .close-btn').click();
 
     // Create template for protected category
     cy.get('.fab').click();

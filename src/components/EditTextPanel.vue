@@ -35,6 +35,29 @@
         </div>
       </div>
 
+      <div v-if="detectedVariables.length > 0" class="row">
+        <div class="col col-large">
+          <label>Template Variables</label>
+          <div class="variable-status-list">
+            <div
+              v-for="variable in detectedVariables"
+              :key="variable"
+              class="variable-status-item"
+            >
+              <span class="variable-name">{{ variable }}</span>
+              <span
+                v-if="stringStore.getValueListByName(variable)"
+                class="variable-linked"
+              >
+                {{ stringStore.getValueListByName(variable)!.values.length }}
+                options
+              </span>
+              <span v-else class="variable-freetext">free text</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="row sort-row">
         <div class="col">
           <label for="sortOrder">Sort Order</label>
@@ -64,7 +87,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { useStringStore } from '../stores/stringStore';
 import SlidingPanel from './SlidingPanel.vue';
 import type QuickText from '../models/quickText';
@@ -84,6 +107,11 @@ const stringStore = useStringStore();
 const localText = ref('');
 const localCategoryIds = ref<number[]>([]);
 const localSort = ref(0);
+
+const detectedVariables = computed(() => {
+  const matches = localText.value.match(/{{\s*([^}]+)\s*}}/g) || [];
+  return matches.map(m => m.replace(/[{}]/g, '').trim());
+});
 
 watch(
   () => props.quickText,
@@ -277,5 +305,38 @@ label {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 2px var(--accent-background);
+}
+
+.variable-status-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.variable-status-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: 0.8rem;
+}
+
+.variable-name {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.variable-linked {
+  color: var(--accent);
+  font-size: 0.75rem;
+}
+
+.variable-freetext {
+  color: var(--text-light);
+  font-size: 0.75rem;
+  font-style: italic;
 }
 </style>

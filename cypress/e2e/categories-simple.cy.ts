@@ -12,7 +12,7 @@
     cy.get('.sliding-panel.visible ul li').contains('Manage Categories').click();
     cy.get('.add-category-row .live-edit-name').type('Test');
     cy.get('.add-category-row .add-button').click();
-    cy.get('.close-btn').click();
+    cy.get('.sliding-panel.visible .close-btn').click();
 
     // Add a template to trigger bottom bar
     cy.get('.fab').click();
@@ -49,7 +49,7 @@
     cy.get('.add-category-row .live-edit-name').type('Work');
     cy.get('.add-category-row .live-edit-icon').type('💼');
     cy.get('.add-category-row .add-button').click();
-    cy.get('.close-btn').click();
+    cy.get('.sliding-panel.visible .close-btn').click();
 
     // Create template
     cy.get('.fab').click();

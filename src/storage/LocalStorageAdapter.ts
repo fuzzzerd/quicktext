@@ -37,6 +37,7 @@ export class LocalStorageAdapter implements StorageAdapter {
       'quickTexts',
       'categories',
       'activeCategoryId',
+      'valueLists',
       'settings'
     ];
 
@@ -52,6 +53,7 @@ export class LocalStorageAdapter implements StorageAdapter {
       'quickTexts',
       'categories',
       'activeCategoryId',
+      'valueLists',
       'settings'
     ];
 
