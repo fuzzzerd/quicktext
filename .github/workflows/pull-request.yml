@@ -29,12 +29,16 @@ jobs:
         run: npm run test
         continue-on-error: true
 
+      - name: Merge Cypress test results
+        if: always()
+        run: npx mochawesome-merge cypress/results/*.json -o cypress/results/merged.json
+
       - name: Process Cypress Test Results
         uses: im-open/process-cypress-test-results@v3
         if: always()
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          results-file: 'cypress/results/mochawesome.json'
+          results-file: 'cypress/results/merged.json'
           report-name: 'Cypress E2E Test Results'
           create-status-check: false
           create-pr-comment: true
