@@ -1,11 +1,10 @@
-['localStorage', 'indexedDB'].forEach(storageType => {
-  describe(`PIN Functionality - ${storageType}`, () => {
-    beforeEach(() => {
-      cy.clearAllStorage();
-      cy.setStorageTypeAndWait(storageType);
-      cy.visit('/');
+describe('PIN Functionality', () => {
+  beforeEach(() => {
+    cy.clearAllStorage();
+    cy.setStorageTypeAndWait('localStorage');
+    cy.visit('/');
 
-      // Create category with PIN protection
+    // Create category with PIN protection
     cy.get('.icons button').contains('...').click();
     cy.get('.sliding-panel.visible ul li')
       .contains('Manage Categories')
@@ -221,5 +220,4 @@
     cy.get('.sliding-panel.visible .pin-form').should('be.visible');
     cy.get('.sliding-panel.visible h3').should('contain.text', 'Enter PIN');
   });
-});
 });

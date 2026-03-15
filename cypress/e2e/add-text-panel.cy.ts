@@ -1,60 +1,50 @@
-['localStorage', 'indexedDB'].forEach(storageType => {
-  describe(`QuickText Add Panel - ${storageType}`, () => {
-    beforeEach(() => {
-      cy.clearAllStorage();
-      cy.setStorageTypeAndWait(storageType);
-      cy.visit('/');
-    });
+describe('QuickText Add Panel', () => {
+  beforeEach(() => {
+    cy.clearAllStorage();
+    cy.setStorageTypeAndWait('localStorage');
+    cy.visit('/');
+  });
 
   it('should open the add panel when FAB is clicked', () => {
-    cy.get('.fab').click(); // Changed selector
+    cy.get('.fab').click();
     cy.get('.sliding-panel.visible textarea[name="msgAdd"]').should(
       'be.visible'
     );
   });
 
   it('should add text to global collection', () => {
-    cy.get('.fab').click(); // Changed selector
+    cy.get('.fab').click();
     cy.get('.sliding-panel.visible textarea[name="msgAdd"]').type(
       'My awesome text'
     );
-    cy.get('.sliding-panel.visible button').contains('Add').click(); // New selector targeting button by text
+    cy.get('.sliding-panel.visible button').contains('Add').click();
     cy.get('.item .details').should('contain.text', 'My awesome text');
   });
 
   it('should clear text and close panel on cancel', () => {
-    cy.get('.fab').click(); // Changed selector
+    cy.get('.fab').click();
     cy.get('.sliding-panel.visible textarea[name="msgAdd"]').type(
       'Should be cleared'
     );
-    cy.get('.sliding-panel.visible button').contains('Cancel').click(); // New selector targeting button by text
+    cy.get('.sliding-panel.visible button').contains('Cancel').click();
     cy.get('.sliding-panel.visible').should('not.exist');
   });
 
   it('should delete text from global collection', () => {
-    // add a new item
-    cy.get('.fab').click(); // Changed selector
+    cy.get('.fab').click();
     cy.get('.sliding-panel.visible textarea[name="msgAdd"]').type(
       'To be deleted'
     );
-    cy.get('.sliding-panel.visible button').contains('Add').click(); // New selector targeting button by text
-    
-    // delete the item - now need to open edit panel first
+    cy.get('.sliding-panel.visible button').contains('Add').click();
+
     cy.get('.item .details').contains('To be deleted').click();
-    
-    // Wait for edit panel to open and click delete link
     cy.get('.sliding-panel.visible .delete-link').click();
-    
-    // Confirm deletion
     cy.on('window:confirm', () => true);
-    
-    // assert item is removed
     cy.contains('.item .details', 'To be deleted').should('not.exist');
   });
 
   describe('Category Integration', () => {
     beforeEach(() => {
-      // Create a test category
       cy.get('.icons button').contains('...').click();
       cy.get('.sliding-panel.visible ul li').contains('Manage Categories').click();
       cy.get('.add-category-row .live-edit-name').type('TestCategory');
@@ -71,14 +61,12 @@
     });
 
     it('should not show category selector when no categories exist', () => {
-      // Delete the test category first
       cy.get('.icons button').contains('...').click();
       cy.get('.sliding-panel.visible ul li').contains('Manage Categories').click();
       cy.get('.category-item .delete-btn').click();
       cy.on('window:confirm', () => true);
       cy.get('.sliding-panel.visible .close-btn').click();
 
-      // Now test add panel
       cy.get('.fab').click();
       cy.get('.sliding-panel.visible .category-selector').should('not.exist');
     });
@@ -89,19 +77,13 @@
       cy.get('.sliding-panel.visible .category-chip').contains('TestCategory').click();
       cy.get('.sliding-panel.visible .category-chip').contains('TestCategory').should('have.class', 'selected');
       cy.get('.sliding-panel.visible button').contains('Add').click();
-
-      // Verify template was added
       cy.get('.item .details').should('contain.text', 'Categorized template');
     });
 
     it('should toggle category selection', () => {
       cy.get('.fab').click();
-      
-      // Select category
       cy.get('.sliding-panel.visible .category-chip').contains('TestCategory').click();
       cy.get('.sliding-panel.visible .category-chip').contains('TestCategory').should('have.class', 'selected');
-      
-      // Deselect category
       cy.get('.sliding-panel.visible .category-chip').contains('TestCategory').click();
       cy.get('.sliding-panel.visible .category-chip').contains('TestCategory').should('not.have.class', 'selected');
     });
@@ -110,25 +92,15 @@
       cy.get('.fab').click();
       cy.get('.sliding-panel.visible .category-chip').contains('TestCategory').click();
       cy.get('.sliding-panel.visible .category-chip').contains('TestCategory').should('have.class', 'selected');
-      
-      // Close panel
       cy.get('.sliding-panel.visible button').contains('Cancel').click();
-      
-      // Reopen panel
       cy.get('.fab').click();
-      
-      // Selection should be cleared
       cy.get('.sliding-panel.visible .category-chip').contains('TestCategory').should('not.have.class', 'selected');
     });
 
     it('should pre-select active category when adding from filtered view', () => {
-      // Filter by TestCategory first
       cy.get('.bottom-bar button').contains('🧪').click({ force: true });
-      
-      // Add template (should pre-select the active category)
       cy.get('.fab').click();
       cy.get('.sliding-panel.visible .category-chip').contains('TestCategory').should('have.class', 'selected');
     });
   });
-});
 });

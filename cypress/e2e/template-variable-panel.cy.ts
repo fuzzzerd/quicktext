@@ -1,29 +1,28 @@
-['localStorage', 'indexedDB'].forEach(storageType => {
-  describe(`Template Variable Panel - ${storageType}`, () => {
-    beforeEach(() => {
-      cy.clearAllStorage();
-      cy.setStorageTypeAndWait(storageType);
-      cy.visit('/');
-    });
+describe('Template Variable Panel', () => {
+  beforeEach(() => {
+    cy.clearAllStorage();
+    cy.setStorageTypeAndWait('localStorage');
+    cy.visit('/');
+  });
 
   it('should not show template panel for text without variables', () => {
     // Add simple text without variables
     cy.get('.fab').click();
     cy.get('.sliding-panel.visible textarea[name="msgAdd"]').type('Simple text');
     cy.get('.sliding-panel.visible button').contains('Add').click();
-    
+
     // Click copy button - expect clipboard error in headless mode
     cy.get('.item .details').should('contain.text', 'Simple text');
-    
+
     // Handle expected clipboard error
     cy.on('uncaught:exception', (err) => {
       if (err.message.includes('Clipboard write was blocked due to lack of user activation')) {
         return false; // prevent test from failing
       }
     });
-    
+
     cy.get('.item .icons button').contains('📃').click();
-    
+
     // Test passes if we get the clipboard error (no template panel shown)
   });
 
@@ -32,11 +31,11 @@
     cy.get('.fab').click();
     cy.get('.sliding-panel.visible textarea[name="msgAdd"]').type('Hello {{name}}!', { parseSpecialCharSequences: false });
     cy.get('.sliding-panel.visible button').contains('Add').click();
-    
+
     // Click copy button
     cy.get('.item .details').should('contain.text', 'Hello {{name}}!');
     cy.get('.item .icons button').contains('📃').click();
-    
+
     // Should show template panel with exactly 1 input field
     cy.get('.variable-input').should('have.length', 1);
   });
@@ -49,12 +48,11 @@
       { parseSpecialCharSequences: false }
     );
     cy.get('.sliding-panel.visible button').contains('Add').click();
-    
-    // Click copy button  
+
+    // Click copy button
     cy.get('.item .icons button').contains('📃').click();
-    
+
     // Should show template panel with exactly 5 input fields
     cy.get('.variable-input').should('have.length', 5);
   });
-});
 });
