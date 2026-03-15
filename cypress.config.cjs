@@ -3,9 +3,9 @@ const { defineConfig } = require('cypress');
 // https://github.com/cypress-io/cypress/issues/28802
 
 module.exports = defineConfig({
-  defaultCommandTimeout: 16000,
+  defaultCommandTimeout: 10000,
   retries: {
-    runMode: 3,
+    runMode: 1,
     openMode: 0
   },
   e2e: {

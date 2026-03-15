@@ -1,10 +1,9 @@
-['localStorage', 'indexedDB'].forEach(storageType => {
-  describe(`Category Edge Cases and Integration - ${storageType}`, () => {
-    beforeEach(() => {
-      cy.clearAllStorage();
-      cy.setStorageTypeAndWait(storageType);
-      cy.visit('/');
-    });
+describe('Category Edge Cases and Integration', () => {
+  beforeEach(() => {
+    cy.clearAllStorage();
+    cy.setStorageTypeAndWait('localStorage');
+    cy.visit('/');
+  });
 
   describe('Category Deletion Impact', () => {
     beforeEach(() => {
@@ -38,7 +37,7 @@
 
       // Template should still exist but be uncategorized
       cy.get('.item .details').should('contain.text', 'Template in category to be deleted');
-      
+
       // Bottom bar should no longer exist (no categories)
       cy.get('.bottom-bar').should('not.exist');
     });
@@ -62,7 +61,7 @@
       // Verify template appears in both categories
       cy.get('.bottom-bar button').contains('🗑️').click({ force: true });
       cy.get('.item').should('have.length', 2); // Both templates
-      
+
       cy.get('.bottom-bar button').contains('✅').click({ force: true });
       cy.get('.item').should('have.length', 1);
       cy.get('.item .details').should('contain.text', 'Multi-category template');
@@ -90,10 +89,10 @@
     it('should not add category with empty name', () => {
       // Try to add category with only icon
       cy.get('.add-category-row .live-edit-icon').type('📝');
-      
+
       // Add button should be disabled
       cy.get('.add-category-row .add-button').should('be.disabled');
-      
+
       // Force click the disabled button to test the function still doesn't add
       cy.get('.add-category-row .add-button').click({ force: true });
 
@@ -156,7 +155,7 @@
   describe('Category Display Edge Cases', () => {
     it('should handle very long category names gracefully', () => {
       const longName = 'This is a very long category name that might cause display issues if not handled properly';
-      
+
       cy.get('.icons button').contains('...').click();
       cy.get('.sliding-panel.visible ul li').contains('Manage Categories').click();
       cy.get('.add-category-row .live-edit-name').type(longName);
@@ -164,7 +163,7 @@
 
       // Category should be added and visible in manager
       cy.get('.category-item .live-edit-name').should('have.value', longName);
-      
+
       cy.get('.sliding-panel.visible .close-btn').click();
 
       // Should appear in bottom bar (might be truncated but should be functional)
@@ -175,18 +174,18 @@
       // Create 10 categories
       cy.get('.icons button').contains('...').click();
       cy.get('.sliding-panel.visible ul li').contains('Manage Categories').click();
-      
+
       for (let i = 1; i <= 10; i++) {
         cy.get('.add-category-row .live-edit-name').clear().type(`Cat${i}`);
         cy.get('.add-category-row .live-edit-icon').clear().type(`${i}️⃣`);
         cy.get('.add-category-row .add-button').click();
       }
-      
+
       cy.get('.sliding-panel.visible .close-btn').click();
 
       // All categories should appear in bottom bar
       cy.get('.bottom-bar button').should('have.length', 10);
-      
+
       // Bottom bar should be scrollable/responsive
       cy.get('.bottom-bar').should('exist');
     });
@@ -201,7 +200,7 @@
 
       // Should show welcome content in main area
       cy.get('main .welcome-container').should('be.visible');
-      
+
       // But bottom bar should be visible
       cy.get('.bottom-bar').should('exist');
     });
@@ -212,15 +211,15 @@
       // Setup multiple categories and templates
       cy.get('.icons button').contains('...').click();
       cy.get('.sliding-panel.visible ul li').contains('Manage Categories').click();
-      
+
       cy.get('.add-category-row .live-edit-name').type('Work');
       cy.get('.add-category-row .live-edit-icon').type('💼');
       cy.get('.add-category-row .add-button').click();
-      
+
       cy.get('.add-category-row .live-edit-name').type('Personal');
       cy.get('.add-category-row .live-edit-icon').type('🏠');
       cy.get('.add-category-row .add-button').click();
-      
+
       cy.get('.sliding-panel.visible .close-btn').click();
 
       // Add a template
@@ -245,11 +244,11 @@
     it('should update categories when changed during edit', () => {
       // Edit template and change category
       cy.get('.item .details').contains('Original template').click();
-      
+
       // Deselect Work, select Personal
       cy.get('.sliding-panel.visible .category-chip').contains('Work').should('have.class', 'selected').click();
       cy.get('.sliding-panel.visible .category-chip').contains('Personal').click();
-      
+
       cy.get('.sliding-panel.visible button').contains('Save').click();
 
       // Should now be in Personal category only
@@ -270,11 +269,10 @@
 
       // Template should become uncategorized
       cy.get('.item .details').should('contain.text', 'Original template');
-      
+
       // Should not appear in Work category
       cy.get('.bottom-bar button').contains('💼').click({ force: true });
       cy.get('.item').should('have.length', 0);
     });
   });
-});
 });

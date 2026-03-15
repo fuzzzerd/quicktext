@@ -3,7 +3,7 @@
     <div class="manager-header">
       <div class="header-content">
         <h2>Manage Value Lists</h2>
-        <button class="close-btn" @click="emit('close')">✕</button>
+        <button class="close-btn" @click="handleClose">✕</button>
       </div>
     </div>
 
@@ -116,6 +116,12 @@ const draggedValueInfo = ref<{
   variable: string;
   valueIndex: number;
 } | null>(null);
+
+function handleClose() {
+  expandedVariable.value = null;
+  newValueText.value = '';
+  emit('close');
+}
 
 function getValues(variable: string): string[] {
   const list = stringStore.getValueListByName(variable);

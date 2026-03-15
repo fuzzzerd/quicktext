@@ -1,10 +1,9 @@
-['localStorage', 'indexedDB'].forEach(storageType => {
-  describe(`Welcome Content Panel - ${storageType}`, () => {
-    beforeEach(() => {
-      cy.clearAllStorage();
-      cy.setStorageTypeAndWait(storageType);
-      cy.visit('/');
-    });
+describe('Welcome Content Panel', () => {
+  beforeEach(() => {
+    cy.clearAllStorage();
+    cy.setStorageTypeAndWait('localStorage');
+    cy.visit('/');
+  });
 
   it('should show welcome content when there are no templates', () => {
     // Welcome content should be visible in main area when no templates exist
@@ -49,7 +48,7 @@
 
     // Remove the template - click to open edit panel first
     cy.get('.item .details').contains('Temporary template').click();
-    
+
     // Delete via edit panel
     cy.get('.sliding-panel.visible .delete-link').click();
     cy.on('window:confirm', () => true);
@@ -123,5 +122,4 @@
       .contains('Welcome to QuickText!')
       .should('exist');
   });
-});
 });

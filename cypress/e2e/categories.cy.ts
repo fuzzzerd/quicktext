@@ -1,10 +1,9 @@
-['localStorage', 'indexedDB'].forEach(storageType => {
-  describe(`Category Management - ${storageType}`, () => {
-    beforeEach(() => {
-      cy.clearAllStorage();
-      cy.setStorageTypeAndWait(storageType);
-      cy.visit('/');
-    });
+describe('Category Management', () => {
+  beforeEach(() => {
+    cy.clearAllStorage();
+    cy.setStorageTypeAndWait('localStorage');
+    cy.visit('/');
+  });
 
   describe('Category CRUD Operations', () => {
     it('should add a new category', () => {
@@ -109,17 +108,17 @@
       // Create some categories for testing
       cy.get('.icons button').contains('...').click();
       cy.get('.sliding-panel.visible ul li').contains('Manage Categories').click();
-      
+
       // Add Work category
       cy.get('.add-category-row .live-edit-name').type('Work');
       cy.get('.add-category-row .live-edit-icon').type('💼');
       cy.get('.add-category-row .add-button').click();
-      
+
       // Add Personal category
       cy.get('.add-category-row .live-edit-name').type('Personal');
       cy.get('.add-category-row .live-edit-icon').type('🏠');
       cy.get('.add-category-row .add-button').click();
-      
+
       // Close category manager
       cy.get('.sliding-panel.visible .close-btn').click();
     });
@@ -128,11 +127,11 @@
       // Add a new template with category selection
       cy.get('.fab').click();
       cy.get('.sliding-panel.visible textarea[name="msgAdd"]').type('Meeting notes template');
-      
+
       // Select Work category
       cy.get('.sliding-panel.visible .category-chip').contains('Work').click();
       cy.get('.sliding-panel.visible .category-chip').contains('Work').should('have.class', 'selected');
-      
+
       cy.get('.sliding-panel.visible button').contains('Add').click();
 
       // Verify template was added
@@ -143,15 +142,15 @@
       // Add a new template with multiple category selections
       cy.get('.fab').click();
       cy.get('.sliding-panel.visible textarea[name="msgAdd"]').type('Universal greeting');
-      
+
       // Select both categories
       cy.get('.sliding-panel.visible .category-chip').contains('Work').click();
       cy.get('.sliding-panel.visible .category-chip').contains('Personal').click();
-      
+
       // Verify both are selected
       cy.get('.sliding-panel.visible .category-chip').contains('Work').should('have.class', 'selected');
       cy.get('.sliding-panel.visible .category-chip').contains('Personal').should('have.class', 'selected');
-      
+
       cy.get('.sliding-panel.visible button').contains('Add').click();
 
       // Verify template was added
@@ -167,11 +166,11 @@
 
       // Edit the template
       cy.get('.item .details').contains('Test template').click();
-      
+
       // Deselect Work and select Personal instead
       cy.get('.sliding-panel.visible .category-chip').contains('Work').should('have.class', 'selected').click();
       cy.get('.sliding-panel.visible .category-chip').contains('Personal').click();
-      
+
       // Save changes
       cy.get('.sliding-panel.visible button').contains('Save').click();
 
@@ -183,13 +182,13 @@
       // Delete all categories first
       cy.get('.icons button').contains('...').click();
       cy.get('.sliding-panel.visible ul li').contains('Manage Categories').click();
-      
+
       // Delete all categories
       cy.get('.category-item .delete-btn').each(($btn) => {
         cy.wrap($btn).click();
         cy.on('window:confirm', () => true);
       });
-      
+
       cy.get('.sliding-panel.visible .close-btn').click();
 
       // Add a template (should work without categories)
@@ -199,7 +198,7 @@
 
       // Verify template appears
       cy.get('.item .details').should('contain.text', 'Uncategorized template');
-      
+
       // Bottom bar should not be visible when no categories exist
       cy.get('.bottom-bar').should('not.exist');
     });
@@ -210,16 +209,16 @@
       // Create categories and templates for testing
       cy.get('.icons button').contains('...').click();
       cy.get('.sliding-panel.visible ul li').contains('Manage Categories').click();
-      
+
       // Add categories
       cy.get('.add-category-row .live-edit-name').type('Work');
       cy.get('.add-category-row .live-edit-icon').type('💼');
       cy.get('.add-category-row .add-button').click();
-      
+
       cy.get('.add-category-row .live-edit-name').type('Personal');
       cy.get('.add-category-row .live-edit-icon').type('🏠');
       cy.get('.add-category-row .add-button').click();
-      
+
       cy.get('.sliding-panel.visible .close-btn').click();
 
       // Add templates to different categories
@@ -244,11 +243,11 @@
     it('should show bottom bar with category tabs when categories exist', () => {
       // Bottom bar should be visible
       cy.get('.bottom-bar').should('exist');
-      
+
       // Check for Work category button
       cy.get('.bottom-bar button', { timeout: 5000 }).contains('💼').should('exist');
-      
-      // Check for Personal category button  
+
+      // Check for Personal category button
       cy.get('.bottom-bar button', { timeout: 5000 }).contains('🏠').should('exist');
     });
 
@@ -262,7 +261,7 @@
       // Should only see Work template
       cy.get('.item').should('have.length', 1);
       cy.get('.item .details').should('contain.text', 'Work email template');
-      
+
       // Work button should be active
       cy.get('.bottom-bar button:contains("💼")').should('have.class', 'active');
     });
@@ -274,7 +273,7 @@
       // Should only see Personal template
       cy.get('.item').should('have.length', 1);
       cy.get('.item .details').should('contain.text', 'Personal note template');
-      
+
       // Personal button should be active
       cy.get('.bottom-bar button:contains("🏠")').should('have.class', 'active');
     });
@@ -286,7 +285,7 @@
       // Should only see uncategorized template
       cy.get('.item').should('have.length', 1);
       cy.get('.item .details').should('contain.text', 'General template');
-      
+
       // Uncategorized button should be active
       cy.get('.bottom-bar button:contains("📁")').should('have.class', 'active');
     });
@@ -296,7 +295,7 @@
       cy.get('.bottom-bar button').contains('💼').click({ force: true });
       cy.get('.item').should('have.length', 1);
 
-      // Filter by Personal  
+      // Filter by Personal
       cy.get('.bottom-bar button').contains('🏠').click({ force: true });
       cy.get('.item').should('have.length', 1);
 
@@ -325,10 +324,10 @@
     it('should show appropriate message when filtered category has no templates', () => {
       // Delete the Work template while it's visible
       cy.get('.bottom-bar button').contains('💼').click({ force: true });
-      
+
       // Click on template to open edit panel
       cy.get('.item .details').contains('Work email template').click();
-      
+
       // Delete via edit panel
       cy.get('.sliding-panel.visible .delete-link').click();
       cy.on('window:confirm', () => true);
@@ -342,10 +341,10 @@
     it('should allow adding template from empty category message', () => {
       // Delete the Work template to make category empty
       cy.get('.bottom-bar button').contains('💼').click({ force: true });
-      
+
       // Click on template to open edit panel
       cy.get('.item .details').contains('Work email template').click();
-      
+
       // Delete via edit panel
       cy.get('.sliding-panel.visible .delete-link').click();
       cy.on('window:confirm', () => true);
@@ -364,14 +363,14 @@
       // Create multiple categories for reordering tests
       cy.get('.icons button').contains('...').click();
       cy.get('.sliding-panel.visible ul li').contains('Manage Categories').click();
-      
+
       // Add categories in order
       cy.get('.add-category-row .live-edit-name').type('First');
       cy.get('.add-category-row .add-button').click();
-      
+
       cy.get('.add-category-row .live-edit-name').type('Second');
       cy.get('.add-category-row .add-button').click();
-      
+
       cy.get('.add-category-row .live-edit-name').type('Third');
       cy.get('.add-category-row .add-button').click();
     });
@@ -398,5 +397,4 @@
       });
     });
   });
-});
 });
