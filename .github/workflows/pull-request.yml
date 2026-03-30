@@ -34,7 +34,7 @@ jobs:
         run: npx mochawesome-merge cypress/results/*.json -o cypress/results/merged.json
 
       - name: Process Cypress Test Results
-        uses: im-open/process-cypress-test-results@v3
+        uses: im-open/process-cypress-test-results@v4
         if: always()
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
