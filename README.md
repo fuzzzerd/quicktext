@@ -37,8 +37,13 @@ See [Vite Configuration Reference](https://vite.dev/config/).
 
 ## Project Setup
 
+Use Node.js 22.22.2+ (22.x), 24.15.0+ (24.x), or 26+ with npm 10+.
+
+TypeScript is kept on 6.0.3 because the current stable Vue type checker and
+TypeScript ESLint tooling do not support TypeScript 7.
+
 ```sh
-npm install
+npm ci
 ```
 
 ### Compile and Hot-Reload for Development
@@ -57,4 +62,30 @@ npm run build
 
 ```sh
 npm run lint
+```
+
+`eslint.config.ts` configures TypeScript ESLint and the Vue parser directly,
+retaining the recommended TypeScript and essential Vue rules without the
+unpatched `braces` dependency pulled in by `@vue/eslint-config-typescript`.
+
+### Run Cypress End-to-End Tests
+
+Install Google Chrome, then run:
+
+```sh
+npm test
+```
+
+This starts the HTTPS development server and runs Cypress in headless Chrome.
+Chrome replaces Cypress's deprecated Electron test browser. To use another
+browser or a custom Chrome executable with an already running development server:
+
+```sh
+npm run cy:run -- --browser /path/to/chrome
+```
+
+To type-check the Cypress tests:
+
+```sh
+npx tsc --noEmit -p cypress/tsconfig.json
 ```

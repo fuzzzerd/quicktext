@@ -11,19 +11,17 @@ describe('Template Variable Panel', () => {
     cy.get('.sliding-panel.visible textarea[name="msgAdd"]').type('Simple text');
     cy.get('.sliding-panel.visible button').contains('Add').click();
 
-    // Click copy button - expect clipboard error in headless mode
     cy.get('.item .details').should('contain.text', 'Simple text');
 
-    // Handle expected clipboard error
-    cy.on('uncaught:exception', (err) => {
-      if (err.message.includes('Clipboard write was blocked due to lack of user activation')) {
-        return false; // prevent test from failing
-      }
+    // Stub the OS clipboard boundary rather than relying on browser permissions.
+    cy.window().then(win => {
+      cy.stub(win.navigator.clipboard, 'writeText').as('writeText').resolves();
     });
 
     cy.get('.item .icons button').contains('📃').click();
 
-    // Test passes if we get the clipboard error (no template panel shown)
+    cy.get('@writeText').should('have.been.calledWith', 'Simple text');
+    cy.get('.sliding-panel.visible').should('not.exist');
   });
 
   it('should show template panel with 1 field for text with 1 variable', () => {
