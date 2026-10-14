@@ -21,7 +21,7 @@ Cypress.Commands.add('clearAllStorage', () => {
           })
         );
       }
-    } catch (error) {
+    } catch {
       // If databases() isn't supported, try to delete known database
       return new Promise<void>((resolve) => {
         const deleteReq = win.indexedDB.deleteDatabase('quicktext-storage');
@@ -70,13 +70,3 @@ Cypress.Commands.add('setStorageTypeAndWait', (storageType: 'localStorage' | 'in
     cy.wait(200);
   }
 });
-
-// Type declarations for custom commands
-declare global {
-  namespace Cypress {
-    interface Chainable {
-      clearAllStorage(): Chainable<void>;
-      setStorageTypeAndWait(storageType: 'localStorage' | 'indexedDB'): Chainable<void>;
-    }
-  }
-}
